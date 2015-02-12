@@ -7,3 +7,6 @@ CMakeFiles
 *.cmake
 CMakeCache.txt
 Makefile
+
+# Actual executables:
+main
