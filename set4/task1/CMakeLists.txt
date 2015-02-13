@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.6)
 
 enable_language(C)
 
-add_subdirectory(common common)
+add_subdirectory(../common common)
 
 add_definitions(${COMMON_DEFINITIONS})
 list(APPEND CMAKE_C_FLAGS ${COMMON_C_FLAGS})
