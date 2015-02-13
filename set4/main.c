@@ -38,7 +38,7 @@ int main(int argc, char **argv )
     double sum;
     Vector v;
     for (k=3;k<=14;++k){
-        n = pow(4,k);
+        n = pow(2,k);
         v = generateV(n);
         if (k==3)
             printVector(v);
