@@ -7,12 +7,12 @@ include_directories(${COMMON_INCLUDE_PATHS})
 add_definitions(${COMMON_DEFINITIONS})
 list(APPEND CMAKE_C_FLAGS ${COMMON_C_FLAGS})
 
-add_executable(integrate-openmp integrate.c)
-target_link_libraries(integrate-openmp ${COMMON_LIBRARIES})
+if(UNIX)
+link_libraries(m)
+endif(UNIX)
 
-#if(UNIX)
-#    link_libraries(m)
-#endif(UNIX)
+add_executable(vectorsum-openmp vectorsum_omp.c)
+target_link_libraries(vectorsum-openmp ${COMMON_LIBRARIES})
 enable_testing()
 
 # This translates to OMP_NUM_THREADS=2 <dir>/integrate-openmp 10000

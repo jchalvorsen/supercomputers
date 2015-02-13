@@ -10,3 +10,4 @@ Makefile
 
 # Actual executables:
 integrate-openmp
+vectorsum-openmp
