@@ -1,7 +1,7 @@
 project(sumOpenMP)
 cmake_minimum_required(VERSION 2.6)
 
-add_subdirectory(../common common)
+add_subdirectory(../common ../common)
 
 include_directories(${COMMON_INCLUDE_PATHS})
 add_definitions(${COMMON_DEFINITIONS})
