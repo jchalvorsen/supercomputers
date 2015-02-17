@@ -1,0 +1,10 @@
+# Exercise set 4 gitignore
+
+# cmake folder:
+*cmakefiles
+
+# cmake files:
+*.cmake
+*CMakeCache.txt
+*Makefile
+
