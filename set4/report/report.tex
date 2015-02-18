@@ -7,6 +7,7 @@
 \usepackage{subcaption}
 \usepackage{cite}
 \usepackage{dsfont}
+\usepackage{amssymb}
 \title{TMA4280}
 \author{Authors}
 
@@ -21,5 +22,20 @@ Abstract.
 \end{abstract}
 
 \newpage
-
+\section*{Something}
+In this project we have studied the vector $v \in \mathbb{R}^n$ where the elements are defined as 
+\begin{equation}
+\label{vdefinition}
+	v(i) =\frac{1}{i^2},\quad i = 1,2,...,n
+\end{equation}
+and the sum $S_n$ of all the vector elements 
+\begin{equation}
+\label{Sdefinition}
+	S_n = \sum_{i=1}^n v(i).
+\end{equation}
+First, a singe processor C program generating $v$, computing $S_n$ in double precision and computing and printing the difference $S - S_n$ was written. 
+\\\\
+Next, the program was changed to utilize shared memorize paralellization through OpenMP. 
+\\\\
+Then, a program computing the sum using $P	$ processors and a ditributed memory model, as described in (REFERANSE), was made. In this program we used the MPI calls MPI\_ SCATTER and MPI\_ GATHER. 
 \end{document}
