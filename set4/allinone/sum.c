@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 
@@ -33,7 +34,7 @@ int main(int argc, char **argv )
         sum = computeSum(v,n);
         printf("The difference in sums for N = %d is: %f \n",n, fabs(S - sum));
     }
-    
+    free(v);
     return 0;
 }
 
