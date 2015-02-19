@@ -10,22 +10,18 @@
 \usepackage{amssymb}
 \title{TMA4280 computing parallel sums of vectors.}
 \author{Jon Christian Halvorsen, Anette Fossum Morken, \\Monica Kappeslåen Plassen}
-
-
 \begin{document}
 \maketitle
 In this project we have studied the vector $v \in \mathbb{R}^n$ where the elements are defined as 
 \begin{equation}
 \label{vdefinition}
-	v(i) =\frac{1}{i^2},\quad i = 1,2,...,n.
+	v(i) =\frac{1}{i^2},\quad i = 1,2,...,n
 \end{equation}
-Generating the vector $v$ requires $3n$ floating point operations. For each element in the vector we do one multiplication, one division and one assignment.  
-The sum $S_n$ of all the vector elements 
+and the sum $S_n$ of all the vector elements 
 \begin{equation}
 \label{Sdefinition}
-	S_n = \sum_{i=1}^n v(i)
-\end{equation}
-requires $n+1$ floating point operations, $n$ for summing all the elements and one for assigning the sum.\\
+	S_n = \sum_{i=1}^n v(i).
+\end{equation}\\
 \\
 First, a single processor C program (sum.c) generating $v$, computing $S_n$ in double precision and computing and printing the difference $S - S_n$ for different values of $n$ was written. Next, the program was changed to utilize shared memorize paralellization through OpenMP (sum\_ omp.c). \\
 \\
@@ -54,7 +50,28 @@ $n$ & $S-s_n$  \\
 \end{tabular}
 \end{table} 
 The difference in the sum was exactly the same as in table \ref{tab:MPIerror} if we ran the serial code, the MPI code with $P =2$ or $P = 8$ threads. Since the MPI code scatters the data over more threads we don't have control over the order which the elements are summed and is thus not guaranteed an equal result. In this case it worked out well.\\\\
-We consider the memory requirement for our single and multi-processor programs when $n >> 1$. In the single processor program, we need to store the $n$ elements of the vector $v$, so the memory requirement on the processor is of order $n$. On the multi-processor program, we store $v$ on processor $0$, which then distributes the elements evenly among all the processors. Thus, with $P$ processors, on processor $0$ the requirement is $n + n/P$ and on the other $P-1$ it is $n/P$. \\ \\
-For this problem, we think parallel programming is somewhat redundant, seeing as we used a quite limited  vector size $n$.
-
+\\
+\\
+A floating point operation is addition, subtraction, multiplication and addition of two floating point numbers. We define addition and subtraction as flop type $a$, multiplication as type $b$ and division as type $c$. In our programs we defined the $i$ as an integer and the one in the numerator of \eqref{vdefinition} as a floating point. Therefore, the only floating point operation per element in the vector $v$ is the division, and in total $n$ floating point operations (of type $c$) are needed to generate $v$. If we had defined $i$ as a float, we would also have one type $b$ operation per element, and the total number of operations would be $n\cdot b + n\cdot c$. To compute the sum $S_n$ in \eqref{Sdefinition} after $v$ is computed, $n-1$ additions has to be made, so the total number of operations is $a\cdot (n-1)$. The number of operation are the same for all our programs.
+\\
+\\
+We consider the memory requirement for our single and multi-processor programs when $n >> 1$. In the single processor program, we need to store the $n$ elements of the vector $v$, in other words $n$ floating points, plus all variables of different data types that exist in the program. We define $m$ to be the memory required to store one element in $v$ and $m_{var}$ the total memory required to store all other variables in the program, for example the analytical sum $S$, which is stored as a float, and the integer $n$. Let $f_s$ be the total memory requirement for the single-processor program and we see that
+\begin{equation}
+f_{s}(n) = m \cdot n + m_{var}.
+\end{equation}
+Now we consider the same for the multi-processor program utilizing MPI, and look at the memory requirement for each of the $P$ individual processors. All of them will have to store a copy of the global variables and their own local variables. In addition, processor $0$ will have to store the entire vector $v$, and all processors will get a part of the vector of size $\frac{n}{P}$ that they store individually. Let $m_{glob}$ and $m_{loc}$ be the memory requirement for the global and local variables respectively, and define $m$ as before. Define $f_M^j$ to be the total memory requirement for processor $j$.
+\begin{equation}
+f_M^j(n,P) = \left\{
+  				\begin{array}{l l}
+  				m_{glob} + m_{loc} + m\cdot (n + \frac{n}{P}) & \quad \text{j = 0}\\
+  				m_{glob} + m_{loc} + m\cdot \frac{n}{P} & \quad \text{j = 1,...,P} 
+  				\end{array} \right.
+\end{equation}
+In total, the memory requirement for the program will be
+\begin{equation}
+f_M(n,P) = \sum_{j=0}^{P-1} f_M^j.  
+\end{equation}
+\\
+\\
+For this problem, we do not think parallel programming is very attractive, especially since we used a quite limited  vector size $n$. The single processor program managed the computations and storage fast and without issues for these sizes. A larger program with more operations per iteration
 \end{document}
