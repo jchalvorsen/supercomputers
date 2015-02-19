@@ -40,7 +40,33 @@ First, a single processor C program (sum.c) generating $v$, computing $S_n$ in d
 \\\\
 Next, the program was changed to utilize shared memorize paralellization through OpenMP (sum\_ omp.c). 
 \\\\
-Then, a program computing the sum using $P$ processors and a distributed memory model, as described in (REFERANSE), was made (sum\_ mpi.c). In this program we used the convenient MPI calls MPI\_ Scatter and MPI\_ Reduce. The scatter call were chosen instead of the send/receive calls because this operation was well suited for a one-to-all operation. The scatter call were also used instead of the distribute call since the separate threads don't need all the data (saves memory). The reduce call was used instead of MPI\_ Gather since all we wanted was the sum, and the the gather was not needed. Necessary MPI calls were as usual the MPI\_ Init, MPI\_ Comm\_ size, MPI\_ Comm\_ rank and MPI\_ Finalize.
+Then, a program computing the sum using $P$ processors and a distributed memory model, as described in (REFERANSE), was made (sum\_ mpi.c). In this program we used the convenient MPI calls MPI\_ Scatter and MPI\_ Reduce. The scatter call were chosen instead of the send/receive calls because this operation was well suited for a one-to-all operation. The scatter call were also used instead of the distribute call since the separate threads don't need all the data (saves memory). The reduce call was used instead of MPI\_ Gather since all we wanted was the sum, and the the gather was not needed. Necessary MPI calls were as usual the MPI\_ Init, MPI\_ Comm\_ size, MPI\_ Comm\_ rank and MPI\_ Finalize. Error values of the sum are presented in table \ref{tab:MPIerror}.
 \\\\
-Lastly a program using both MPI and OpenMP were tested (sum\_ omp\_ mpi.c) and confirmed working. 
+Lastly a program using both MPI and OpenMP were tested (sum\_ omp\_ mpi.c) and confirmed working.
+
+
+\begin{table}
+\centering
+\caption{Error values for different values of n using the MPI program.}
+\label{tab:MPIerror}
+\begin{tabular}{rr}
+$n$ & $S-s_n$  \\ 
+\hline 
+8 & 0.117512 \\ 
+16 & 0.060588 \\ 
+32 & 0.030767 \\ 
+64 & 0.015504 \\ 
+128 & 0.007782 \\ 
+256 & 0.003899 \\ 
+512 & 0.001951 \\ 
+1024 & 0.000976 \\ 
+2048 & 0.000488 \\ 
+4096 & 0.000244 \\ 
+8192 & 0.000122 \\ 
+16384 & 0.000061
+\end{tabular}
+\end{table} 
+  
+ 
+ 
 \end{document}
