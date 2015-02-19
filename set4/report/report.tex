@@ -38,7 +38,9 @@ requires $n+1$ floating point operations, $n$ for summing all the elements and o
 
 First, a single processor C program (sum.c) generating $v$, computing $S_n$ in double precision and computing and printing the difference $S - S_n$ for different values of $n$ was written. 
 \\\\
-Next, the program was changed to utilize shared memorize paralellization through OpenMP. 
+Next, the program was changed to utilize shared memorize paralellization through OpenMP (sum\_ omp.c). 
 \\\\
-Then, a program computing the sum using $P	$ processors and a ditributed memory model, as described in (REFERANSE), was made. In this program we used the MPI calls MPI\_ SCATTER and MPI\_ GATHER. 
+Then, a program computing the sum using $P$ processors and a distributed memory model, as described in (REFERANSE), was made (sum\_ mpi.c). In this program we used the convenient MPI calls MPI\_ Scatter and MPI\_ Reduce. The scatter call were chosen instead of the send/receive calls because this operation was well suited for a one-to-all operation. The scatter call were also used instead of the distribute call since the separate threads don't need all the data (saves memory). The reduce call was used instead of MPI\_ Gather since all we wanted was the sum, and the the gather was not needed. Necessary MPI calls were as usual the MPI\_ Init, MPI\_ Comm\_ size, MPI\_ Comm\_ rank and MPI\_ Finalize.
+\\\\
+Lastly a program using both MPI and OpenMP were tested (sum\_ omp\_ mpi.c) and confirmed working. 
 \end{document}
