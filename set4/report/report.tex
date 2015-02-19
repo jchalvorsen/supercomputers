@@ -26,14 +26,17 @@ Abstract.
 In this project we have studied the vector $v \in \mathbb{R}^n$ where the elements are defined as 
 \begin{equation}
 \label{vdefinition}
-	v(i) =\frac{1}{i^2},\quad i = 1,2,...,n
+	v(i) =\frac{1}{i^2},\quad i = 1,2,...,n.
 \end{equation}
-and the sum $S_n$ of all the vector elements 
+Generating the vector $v$ requires $3n$ floating point operations. For each element in the vector we do one multiplication, one division and one assignment.  
+The sum $S_n$ of all the vector elements 
 \begin{equation}
 \label{Sdefinition}
-	S_n = \sum_{i=1}^n v(i).
+	S_n = \sum_{i=1}^n v(i)
 \end{equation}
-First, a singe processor C program generating $v$, computing $S_n$ in double precision and computing and printing the difference $S - S_n$ was written. 
+requires $n+1$ floating point operations, $n$ for summing all the elements and one for assigning the sum.
+
+First, a single processor C program (sum.c) generating $v$, computing $S_n$ in double precision and computing and printing the difference $S - S_n$ for different values of $n$ was written. 
 \\\\
 Next, the program was changed to utilize shared memorize paralellization through OpenMP. 
 \\\\
