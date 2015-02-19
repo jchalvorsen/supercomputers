@@ -17,8 +17,8 @@ int main(int argc, char **argv)
 { 
   // Define variables
   int k, n, rank, size, i;
-  double S = M_PI*M_PI/6, sum = 0.0;
-  double t1, t2, dt, error;
+  double S = M_PI*M_PI/6;
+  double sum, t1, t2, dt, error;
   double *v = NULL;
   int *len, *displ;
   
@@ -41,6 +41,7 @@ int main(int argc, char **argv)
             elements_per_proc, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
   // Compute the sum (on all processors)
+  sum = 0.0;
   for (i = 0; i < elements_per_proc; ++i) {
      sum = sum + privateData[i];
   } 
@@ -58,5 +59,6 @@ int main(int argc, char **argv)
   }
   MPI_Finalize();
   free(v);
+  free(globalsum);
   return 0;
 }
