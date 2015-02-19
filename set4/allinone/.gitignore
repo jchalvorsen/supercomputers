@@ -1,4 +1,5 @@
 CMakeFiles
-sum_mpi
 sum
 sum_omp
+sum_mpi
+sum_omp_mpi

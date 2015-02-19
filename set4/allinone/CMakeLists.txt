@@ -21,3 +21,6 @@ add_executable(sum_omp sum_omp.c)
 add_executable(sum_mpi sum_mpi.c)
 target_link_libraries(sum_mpi ${MPI_C_LIBRARIES})
 
+
+add_executable(sum_omp_mpi sum_omp_mpi.c)
+target_link_libraries(sum_omp_mpi ${MPI_C_LIBRARIES})
