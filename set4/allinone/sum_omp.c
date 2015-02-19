@@ -3,7 +3,6 @@
 #include <math.h>
 #include <omp.h>
 
-
 double * generateV(n){
     // Generate the array of data:
     double *v = malloc(sizeof(double) * n);
@@ -13,7 +12,6 @@ double * generateV(n){
     }
     return v;
 }
-
 
 double computeSum(double *v, int n){
     double sum=0.0;

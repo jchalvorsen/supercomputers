@@ -3,8 +3,6 @@
 #include <math.h>
 #include <mpi.h>
 
-//#include "common.h"
-
 double * generateV(n){
     // Generate the array of data:
     double *v = malloc(sizeof(double) * n);
