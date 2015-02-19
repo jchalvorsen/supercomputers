@@ -8,7 +8,7 @@ double * generateV(n){
     double *v = malloc(sizeof(double) * n);
     int i;
     for (i = 1; i <= n; ++i){
-        v[i-1] = 1/(i*i*1.0);
+        v[i-1] = 1.0/(i*i);
     }
     return v;
 }
@@ -20,7 +20,7 @@ int main(int argc, char **argv)
   double S = M_PI*M_PI/6;
   double sum, t1, t2, dt, error;
   double *v = NULL;
-  int *len, *displ;
+  double *globalsum = malloc(sizeof(double));
   
   // initialize MPI and get arguments  
   MPI_Init(&argc, &argv);
@@ -46,15 +46,14 @@ int main(int argc, char **argv)
      sum = sum + privateData[i];
   } 
   
-  // Gather the result, using the reduce function.
-  double *globalsum = malloc(sizeof(double));
+  // Gather the result, using the reduce function. 
   MPI_Reduce(&sum,globalsum,1,MPI_DOUBLE,MPI_SUM,0,MPI_COMM_WORLD);
 
   if (rank == 0) {
     t2 = MPI_Wtime();
     dt = t2 - t1;
     error = fabs(S-globalsum[0]);
-    printf ("sum= %f error= %f dt= %f n=%d \n", globalsum[0], error, dt, n);
+    printf ("sum= %f error= %e dt= %f n=%d \n", globalsum[0], error, dt, n);
   }
   }
   MPI_Finalize();
