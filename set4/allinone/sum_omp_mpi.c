@@ -9,7 +9,7 @@ double * generateV(n){
     double *v = malloc(sizeof(double) * n);
     int i;
     for (i = 1; i <= n; ++i){
-        v[i-1] = 1/(i*i*1.0);
+        v[i-1] = 1.0/(i*i);
     }
     return v;
 }
@@ -21,7 +21,7 @@ int main(int argc, char **argv)
   double S = M_PI*M_PI/6;
   double sum, t1, t2, dt, error;
   double *v = NULL;
-  int *len, *displ;
+  double *globalsum = malloc(sizeof(double));
   
   // initialize MPI and get arguments  
   MPI_Init(&argc, &argv);
@@ -49,7 +49,6 @@ int main(int argc, char **argv)
   } 
   
   // Gather the result, using the reduce function.
-  double *globalsum = malloc(sizeof(double));
   MPI_Reduce(&sum,globalsum,1,MPI_DOUBLE,MPI_SUM,0,MPI_COMM_WORLD);
 
   if (rank == 0) {

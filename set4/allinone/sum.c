@@ -7,7 +7,7 @@ double * generateV(n){
     double *v = malloc(sizeof(double) * n);
     int i;
     for (i = 1; i <= n; ++i){
-        v[i-1] = 1/(i*i*1.0);
+        v[i-1] = 1.0/(i*i);
     }
     return v;
 }
