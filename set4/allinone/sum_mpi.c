@@ -53,7 +53,7 @@ int main(int argc, char **argv)
     t2 = MPI_Wtime();
     dt = t2 - t1;
     error = fabs(S-globalsum[0]);
-    printf ("sum= %f error= %f dt= %f n=%d \n", globalsum[0], error, dt, n);
+    printf ("sum= %f error= %e dt= %f n=%d \n", globalsum[0], error, dt, n);
   }
   }
   MPI_Finalize();

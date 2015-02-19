@@ -33,7 +33,7 @@ int main(int argc, char **argv)
         n = pow(2,k);
         v = generateV(n);
         sum = computeSum(v,n);
-        printf("The difference in sums for N = %d is: %f \n",n, fabs(S - sum));
+        printf("The difference in sums for N = %d is: %e \n",n, fabs(S - sum));
     }
     free(v);
     return 0;
