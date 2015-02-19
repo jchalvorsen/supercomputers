@@ -40,5 +40,9 @@ First, a single processor C program (sum.c) generating $v$, computing $S_n$ in d
 \\\\
 Next, the program was changed to utilize shared memorize paralellization through OpenMP. 
 \\\\
-Then, a program computing the sum using $P	$ processors and a ditributed memory model, as described in (REFERANSE), was made. In this program we used the MPI calls MPI\_ SCATTER and MPI\_ GATHER. 
+Then, a program computing the sum using $P	$ processors and a ditributed memory model, as described in (REFERANSE), was made. In this program we used the MPI calls MPI\_ SCATTER and MPI\_ GATHER. \\
+\\
+We consider the memory requirement for our single and multi-processor programs when $n >> 1$. In the single processor program, we need to store the $n$ elements of the vector $v$, so the memory requirement on the processor is of order $n$. On the multi-processor program, we store $v$ on processor $0$, which then distributes the elements evenly among all the processors. Thus, with $P$ processors, on processor $0$ the requirement is $n + n/P$ and on the other $P-1$ it is $n/P$. \\
+\\
+For this problem, we think parallel programming is somewhat redundant, seeing as we used a quite limited  vector size $n$.
 \end{document}
