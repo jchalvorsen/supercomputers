@@ -1,0 +1,40 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+
+double * generateV(n){
+    // Generate the array of data:
+    double *v = malloc(sizeof(double) * n);
+    int i;
+    for (i = 1; i <= n; ++i){
+        v[i-1] = 1.0/(i*i);
+    }
+    return v;
+}
+
+double computeSum(double *v, int n){
+    double sum = 0;
+    int i;
+    for (i = 0; i < n; ++i){
+        sum += v[i];
+    }
+    return sum;
+}
+
+int main(int argc, char **argv )
+{    
+    // Loop over and print the sum differences:
+    int k, n;
+    double S = M_PI*M_PI/6;
+    double sum;
+    double *v;
+    for (k = 3; k <= 14; ++k){
+        n = pow(2,k);
+        v = generateV(n);
+        sum = computeSum(v,n);
+        printf("The difference in sums for N = %d is: %e \n",n, fabs(S - sum));
+    }
+    free(v);
+    return 0;
+}
+
