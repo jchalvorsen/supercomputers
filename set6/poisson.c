@@ -13,6 +13,8 @@
 #include <stdio.h>
 #include <memory.h>
 #include <math.h>
+#include <mpi.h>
+#include <omp.h>
 
 typedef double Real;
 
@@ -28,7 +30,12 @@ int main(int argc, char **argv )
 {
   Real *diag, **b, **bt, *z;
   Real pi, h, umax;
-  int i, j, n, m, nn;
+  int i, j, n, m, nn, rank, size;
+  
+  // initialize MPI and get arguments  
+  MPI_Init(&argc, &argv);
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
   /* the total number of grid points in each spatial direction is (n+1) */
   /* the total number of degrees-of-freedom in each spatial direction is (n-1) */
@@ -92,7 +99,7 @@ int main(int argc, char **argv )
     }
   }
   printf (" umax = %e \n",umax);
-
+  MPI_Finalize();
   return 0;
 }
 
