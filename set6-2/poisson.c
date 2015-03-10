@@ -80,13 +80,14 @@ int main(int argc, char **argv )
                 bt[j][i] = bt[j][i]/(diag[i]+diag[j]);
             }
         }
-    ]
+    }
         // TODO: spread data
         // Second block of procedure
         // notice opposite order on b/ bt since we get result in b
         procedure (b, bt, n, m, z, nn);
         // TODO: gather data
 
+    if (rank == 0){
         // Print some results
         umax = 0.0;
         for (j=0; j < m; j++) {
