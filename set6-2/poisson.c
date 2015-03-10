@@ -67,22 +67,27 @@ int main(int argc, char **argv )
                 b[j][i] = h*h;
             }
         }
-
+    }
+        // TODO: spread data
         // First block of DST -> transpose -> IDST
         procedure (bt, b, n, m, z, nn);
+        // TODO: gather data
 
-
+    if (rank == 0){
         // finding the eigenvalues
         for (j=0; j < m; j++) {
             for (i=0; i < m; i++) {
                 bt[j][i] = bt[j][i]/(diag[i]+diag[j]);
             }
         }
-
+    ]
+        // TODO: spread data
         // Second block of procedure
         // notice opposite order on b/ bt since we get result in b
         procedure (b, bt, n, m, z, nn);
+        // TODO: gather data
 
+        // Print some results
         umax = 0.0;
         for (j=0; j < m; j++) {
             for (i=0; i < m; i++) {
