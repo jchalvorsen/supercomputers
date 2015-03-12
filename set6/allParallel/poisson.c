@@ -183,10 +183,11 @@ int main(int argc, char **argv )
             if (b[j][i] > umax) umax = b[j][i];
         }
     }
-    printf (" umax = %e , thread %d \n",umax, rank);
-
-
-
+    double *globalsum = malloc(sizeof(double));
+    MPI_Reduce(&umax,globalsum,1,MPI_DOUBLE,MPI_MAX,0,MPI_COMM_WORLD);
+    if(rank == 0){
+        printf (" umax = %e \n",globalsum[0]);
+    }
 
     //printf("Proc number %d says hi: \n", rank);
     //printMatrix(b, numberOfCols[rank], m);
