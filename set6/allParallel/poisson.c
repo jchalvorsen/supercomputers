@@ -23,14 +23,14 @@ Real **createReal2DArray (int m, int n);
 void fst_(Real *v, int *n, Real *w, int *nn);
 void fstinv_(Real *v, int *n, Real *w, int *nn);
 void printMatrix(Real **m, int x, int y);
-void printVector(Real *v, int n);
+void printVector(int *v, int n);
 void transpose(Real **b, int *numberOfCols, int *startCol, Real *sendbuffer, Real *rbuffer);
 
 int main(int argc, char **argv )
 {
     Real *diag, **b, *z, *sendbuffer, *rbuffer;
     Real pi, h, umax;
-    int i, j, n, m, nn , rank, size;
+    int i, j, n, m, nn , rank, size, rest, *numberOfCols,*startCol;
 
     // initialize MPI and get arguments
     MPI_Init(&argc, &argv);
@@ -48,14 +48,20 @@ int main(int argc, char **argv )
     n  = atoi(argv[1]);
     m  = n-1;
 
+
     // Deciding what processor gets what data.
-    int *numberOfCols = malloc( size * sizeof(int) );
-    numberOfCols[0] = m/size;
-    int *startCol = malloc( size * sizeof(int) );
+    numberOfCols = malloc( size * sizeof(int) );
+    rest = m % size;
+    for (i = 0; i < size-rest; ++i){
+        numberOfCols[i] = m/size;
+    }
+    for (i = size-rest; i < size; ++i){
+        numberOfCols[i] = m/size+1;
+    }
+    startCol = malloc( size * sizeof(int) );
     startCol[0] = 0;
 
     for (i = 1; i < size; ++i){
-        numberOfCols[i] = n/size;
         startCol[i] = startCol[i-1] + numberOfCols[i-1];
     }
 
@@ -161,6 +167,8 @@ int main(int argc, char **argv )
     free(sendbuffer);
     free(rbuffer);
     free(globalsum);
+    free(numberOfCols);
+    free(startCol);
     MPI_Finalize();
     return 0;
 }
@@ -213,10 +221,10 @@ void printMatrix(Real **m, int x, int y){
     }
 }
 
-void printVector(Real *v, int n){
+void printVector(int *v, int n){
     int i;
     for (i = 0; i < n; i++){
-        printf("%2.2f \n", v[i]);
+        printf("%d \n", v[i]);
     }
 }
 
