@@ -171,12 +171,7 @@ int main(int argc, char **argv )
         fstinv_(b[i], &n, z, &nn);
     }
 
-//    if (rank == 1){
-//        printf("Proc number %d says hi: \n", rank);
-//        printMatrix(b, numberOfCols[rank], m);
-//    }
-
-    // Print the max stuff:
+    // Get max and max-reduce
     umax = 0.0;
     for (j=0; j < numberOfCols[rank]; j++) {
         for (i=0; i < m; i++) {
@@ -188,10 +183,6 @@ int main(int argc, char **argv )
     if(rank == 0){
         printf (" umax = %e \n",globalsum[0]);
     }
-
-    //printf("Proc number %d says hi: \n", rank);
-    //printMatrix(b, numberOfCols[rank], m);
-
     MPI_Finalize();
     return 0;
 }
