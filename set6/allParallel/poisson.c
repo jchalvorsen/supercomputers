@@ -23,7 +23,7 @@ Real **createReal2DArray (int m, int n);
 void fst_(Real *v, int *n, Real *w, int *nn);
 void fstinv_(Real *v, int *n, Real *w, int *nn);
 void printMatrix(Real **m, int x, int y);
-void printVector(Real *v, int n);
+void printVector(int *v, int n);
 void transpose(Real **b, int *numberOfCols, int *startCol, Real *sendbuffer, Real *rbuffer);
 
 int main(int argc, char **argv )
@@ -192,10 +192,10 @@ void printMatrix(Real **m, int x, int y){
     }
 }
 
-void printVector(Real *v, int n){
+void printVector(int *v, int n){
     int i;
     for (i = 0; i < n; i++){
-        printf("%2.2f \n", v[i]);
+        printf("%d \n", v[i]);
     }
 }
 
