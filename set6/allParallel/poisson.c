@@ -20,19 +20,17 @@ typedef double Real;
 /* function prototypes */
 Real *createRealArray (int n);
 Real **createReal2DArray (int m, int n);
-void transpose (Real **bt, Real **b, int m);
 void fst_(Real *v, int *n, Real *w, int *nn);
 void fstinv_(Real *v, int *n, Real *w, int *nn);
-void procedure (Real **bt, Real **b, int n, int m, Real *z, int nn);
 void printMatrix(Real **m, int x, int y);
 void printVector(Real *v, int n);
 
 
 int main(int argc, char **argv )
 {
-    Real *diag, **b, **bt, *z;
+    Real *diag, **b, *z;
     Real pi, h, umax;
-    int i, j, n, m, nn, rank, size;
+    int i, j, n, m, , rank, size;
 
     // initialize MPI and get arguments
     MPI_Init(&argc, &argv);
@@ -207,78 +205,6 @@ int main(int argc, char **argv )
     return 0;
 }
 
-void procedure (Real **bt, Real **b, int n, int m, Real *z, int nn){
-    int i, size, rank;
-    Real **test;
-    MPI_Comm_size(MPI_COMM_WORLD, &size);
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    //printf("start of procedure \n");
-
-    // All processors need this internal memory managed
-    test = createReal2DArray(m/size,m);
-    int *srdispls = malloc( size * sizeof(int) );
-    int *srcounts = malloc( size * sizeof(int) );
-    for (i=0; i < size; ++i){
-        srcounts[i] = m*m/size;
-        srdispls[i] = i*m*m/size;
-    }
-    if (rank == 0){
-
-        for (i=0; i < size; ++i){
-            printf("%f \n",b[0][srdispls[i]]);
-        }
-        printf("This is whole matrix \n");
-        printMatrix(b, m, m);
-        printf("%p \n", &(b[0][0]));
-        printf("%p \n", (b[0]));
-        printf("This is whole vector \n");
-        printVector(b[0], m*m);
-    }
-
-    //printf("scattering begins on p = %d \n",rank);
-    MPI_Scatterv(&b[0], srcounts, srdispls,
-            MPI_DOUBLE, &test[0], m*m/size,
-            MPI_DOUBLE,
-            0, MPI_COMM_WORLD);
-    //printf("This is proc nr %d's matrix \n", rank);
-    //printVector(test[0], m/size*m);
-
-    // print local data:
-    int p;
-    for (p=0; p<size; p++) {
-        if (rank == p) {
-            printf("Local process on rank %d is:\n", rank);
-            printMatrix(test, m/size, m);
-        }
-        MPI_Barrier(MPI_COMM_WORLD);
-    }
-
-
-    // First do the transform on all the coloumns
-    for (i=0; i < m/size; i++) {
-        fst_(test[i], &n, z, &nn);
-    }
-    printf("This is proc nr %d's matrix after fst %f \n", rank, test[0][0]);
-    printMatrix(test, m/size, m);
-    MPI_Gatherv(test[0], m*m/size, MPI_DOUBLE,
-            b[0], srcounts, srdispls,
-            MPI_DOUBLE, 0, MPI_COMM_WORLD);
-
-    if (rank == 0){
-        printf("This is whole reassambled matrix \n");
-        printMatrix(b, m, m);
-    }
-    if (rank == 0){
-        // Transpose it
-        transpose (bt,b,m);
-
-        // Then do the inverse transform.
-        for (i=0; i < m; i++) {
-            fstinv_(bt[i], &n, z, &nn);
-        }
-    }
-}
-
 void printMatrix(Real **m, int x, int y){
     int i, j;
     for (j=0; j < y; j++) {
@@ -293,17 +219,6 @@ void printVector(Real *v, int n){
     int i;
     for (i = 0; i < n; i++){
         printf("%2.2f \n", v[i]);
-    }
-}
-
-
-void transpose (Real **bt, Real **b, int m)
-{
-    int i, j;
-    for (j=0; j < m; j++) {
-        for (i=0; i < m; i++) {
-            bt[j][i] = b[i][j];
-        }
     }
 }
 
