@@ -52,21 +52,11 @@ int main(int argc, char **argv )
     // Deciding what processor gets what data.
     int *numberOfCols = malloc( size * sizeof(int) );
     numberOfCols[0] = m/size;
-    if (size > 1){
-        for (i = 1; i < size; ++i){
-            numberOfCols[i] = n/size;
-        }
-    }
     int *startCol = malloc( size * sizeof(int) );
     startCol[0] = 0;
-
-    if (size > 1){
-        startCol[1] = m/size;
-        if (size > 2){
-            for (i = 2; i < size; ++i){
-                startCol[i] = startCol[i-1] + n/size;
-            }
-        }
+    for (i = 1; i < size; ++i){
+        numberOfCols[i] = n/size;
+        startCol[i] = startCol[i-1] + numberOfCols[i-1];
     }
 
     // Assigning constants
