@@ -24,11 +24,11 @@ void fst_(Real *v, int *n, Real *w, int *nn);
 void fstinv_(Real *v, int *n, Real *w, int *nn);
 void printMatrix(Real **m, int x, int y);
 void printVector(Real *v, int n);
-
+void transpose(Real **b, Real *buffer, int *numberOfCols, int *startCol);
 
 int main(int argc, char **argv )
 {
-    Real *diag, **b, *z;
+    Real *diag, **b, *z, *buffer;
     Real pi, h, umax;
     int i, j, n, m, nn , rank, size;
 
@@ -48,7 +48,6 @@ int main(int argc, char **argv )
     n  = atoi(argv[1]);
     m  = n-1;
 
-
     // Deciding what processor gets what data.
     int *numberOfCols = malloc( size * sizeof(int) );
     numberOfCols[0] = m/size;
@@ -59,15 +58,21 @@ int main(int argc, char **argv )
         startCol[i] = startCol[i-1] + numberOfCols[i-1];
     }
 
-    // Assigning constants
+    //                      //
+    // Assigning constants  //
+    //                      //
+    h    = 1./(Real)n;
+    pi   = 4.*atan(1.);
+
     // Buffer for sine transform
     nn = 4*n;
     z    = createRealArray (nn);
+
+    // buffer for transpose
+    buffer = createRealArray (m*numberOfCols[rank]);
+
     // b will have a different sizes given thread
     b    = createReal2DArray (numberOfCols[rank],m);
-
-    h    = 1./(Real)n;
-    pi   = 4.*atan(1.);
 
     // diag should be available to all threads
     diag = createRealArray (m);
@@ -82,47 +87,15 @@ int main(int argc, char **argv )
         }
     }
 
-    // Do the first sine transform:
+    //                      //
+    // Start of algorithm   //
+    //                      //
     for (i=0; i < numberOfCols[rank]; i++) {
         fst_(b[i], &n, z, &nn);
     }
 
-    Real *sendbuffer;
-    sendbuffer = createRealArray (m*numberOfCols[rank]);
-    int count = 0;
-    int p;
-    for (p = 0; p < size; ++p){
-        for (i = 0; i < numberOfCols[rank]; ++i){
-            for (j = 0; j < numberOfCols[p]; ++j){
-                sendbuffer[count] = b[i][j + startCol[p]];
-                count += 1;
-            }
-        }
-    }
+    transpose(b, buffer, numberOfCols, startCol);
 
-    int *srdispls = malloc( size * sizeof(int) );
-    int *srcounts = malloc( size * sizeof(int) );
-    for (i=0; i < size; ++i){
-        srcounts[i] = numberOfCols[i]*numberOfCols[rank];
-        srdispls[i] = startCol[i]*numberOfCols[rank];
-    }
-
-    Real *rbuffer;
-    rbuffer = createRealArray (m*numberOfCols[rank]);
-
-    MPI_Alltoallv(sendbuffer, srcounts, srdispls, MPI_DOUBLE, rbuffer, srcounts, srdispls, MPI_DOUBLE, MPI_COMM_WORLD);
-
-    // Taking the data back to b
-    count = 0;
-    for (p = 0; p < size; ++p){
-        for (i = 0; i < numberOfCols[p]; ++i){
-            for (j = 0; j < numberOfCols[rank]; ++j){
-                b[j][i + startCol[p]] = rbuffer[count];
-                count += 1;
-            }
-        }
-    }
-    // Do the second sine transform
     for (i=0; i < numberOfCols[rank]; i++) {
         fstinv_(b[i], &n, z, &nn);
     }
@@ -134,42 +107,18 @@ int main(int argc, char **argv )
         }
     }
 
-
-    // Do the first sine transform:
     for (i=0; i < numberOfCols[rank]; i++) {
         fst_(b[i], &n, z, &nn);
     }
 
-    sendbuffer = createRealArray (m*numberOfCols[rank]);
-    count = 0;
-    for (p = 0; p < size; ++p){
-        for (i = 0; i < numberOfCols[rank]; ++i){
-            for (j = 0; j < numberOfCols[p]; ++j){
-                sendbuffer[count] = b[i][j + startCol[p]];
-                count += 1;
-            }
-        }
-    }
+    transpose(b, buffer, numberOfCols, startCol);
 
-    rbuffer = createRealArray (m*numberOfCols[rank]);
-
-    MPI_Alltoallv(sendbuffer, srcounts, srdispls, MPI_DOUBLE, rbuffer, srcounts, srdispls, MPI_DOUBLE, MPI_COMM_WORLD);
-
-    // Taking the data back to b
-    count = 0;
-    for (p = 0; p < size; ++p){
-        for (i = 0; i < numberOfCols[p]; ++i){
-            for (j = 0; j < numberOfCols[rank]; ++j){
-                b[j][i + startCol[p]] = rbuffer[count];
-                count += 1;
-            }
-        }
-    }
-
-    // Do the second sine transform
     for (i=0; i < numberOfCols[rank]; i++) {
         fstinv_(b[i], &n, z, &nn);
-    }
+    }  
+    //                      //
+    // End of algorithmnts  //
+    //                      //
 
     // Get max and max-reduce
     umax = 0.0;
@@ -183,8 +132,55 @@ int main(int argc, char **argv )
     if(rank == 0){
         printf (" umax = %e \n",globalsum[0]);
     }
+    free(diag);
+    free(b);
+    free(z);
+    free(buffer);
     MPI_Finalize();
     return 0;
+}
+
+void transpose(Real **b, Real *buffer, int *numberOfCols, int *startCol)
+{
+    // Transpose the matrix b in place over MPI
+
+    // Lay out all elements in right memory order
+    int count = 0;
+    int p, i , j, rank, size;
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    for (p = 0; p < size; ++p){
+        for (i = 0; i < numberOfCols[rank]; ++i){
+            for (j = 0; j < numberOfCols[p]; ++j){
+                buffer[count] = b[i][j + startCol[p]];
+                count += 1;
+            }
+        }
+    }
+    // Shuffle memory so we only need one buffer.
+    // Buffer is now recycled so we can receive in it
+    b[0] = buffer;
+
+    int *srdispls = malloc( size * sizeof(int) );
+    int *srcounts = malloc( size * sizeof(int) );
+    for (i=0; i < size; ++i){
+        srcounts[i] = numberOfCols[i]*numberOfCols[rank];
+        srdispls[i] = startCol[i]*numberOfCols[rank];
+    }
+    MPI_Alltoallv(b[0], srcounts, srdispls, MPI_DOUBLE, buffer, srcounts, srdispls, MPI_DOUBLE, MPI_COMM_WORLD);
+
+    // Taking the data back to b
+    count = 0;
+    for (p = 0; p < size; ++p){
+        for (i = 0; i < numberOfCols[p]; ++i){
+            for (j = 0; j < numberOfCols[rank]; ++j){
+                b[j][i + startCol[p]] = buffer[count];
+                count += 1;
+            }
+        }
+    }
+    free(srdispls);
+    free(srcounts);
 }
 
 void printMatrix(Real **m, int x, int y){
