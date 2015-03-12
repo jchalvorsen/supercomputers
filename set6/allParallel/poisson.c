@@ -136,6 +136,12 @@ int main(int argc, char **argv )
         }
     }
 
+    // Find the eigenvalues (b is now transposed, but does not matter here)
+    for (j=0; j < numberOfCols[rank]; j++) {
+        for (i=0; i < m; i++) {
+            b[j][i] = b[j][i]/(diag[i] + diag[j]);
+        }
+    }
 
     if (rank == 1){
         printf("Proc number %d says hi: \n", rank);
