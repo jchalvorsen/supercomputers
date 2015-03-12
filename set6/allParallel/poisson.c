@@ -53,6 +53,7 @@ int main(int argc, char **argv )
     numberOfCols[0] = m/size;
     int *startCol = malloc( size * sizeof(int) );
     startCol[0] = 0;
+
     for (i = 1; i < size; ++i){
         numberOfCols[i] = n/size;
         startCol[i] = startCol[i-1] + numberOfCols[i-1];
@@ -77,11 +78,13 @@ int main(int argc, char **argv )
 
     // diag should be available to all threads
     diag = createRealArray (m);
+    #pragma omp parallel for
     for (i=0; i < m; i++) {
         diag[i] = 2.*(1.-cos((i+1)*pi/(Real)n));
     }
 
     // Fill in values in b. TODO: map from loading function
+    #pragma omp parallel for private(i)
     for (j=0; j < numberOfCols[rank]; j++) {
         for (i=0; i < m; i++) {
             b[j][i] = h*h;//i + m*j + startCol[rank]*m + 1;
@@ -91,30 +94,48 @@ int main(int argc, char **argv )
     //                      //
     // Start of algorithm   //
     //                      //
-
+    
+    #pragma omp parallel
+    z    = createRealArray (nn);
+    #pragma omp for
     for (i=0; i < numberOfCols[rank]; i++) {
         fst_(b[i], &n, z, &nn);
     }
 
     transpose(b, numberOfCols, startCol, sendbuffer,rbuffer);
 
+
+
+    #pragma omp parallel for
+    //COMMENT: Can we avoid makign a new buffer for each thread??
     for (i=0; i < numberOfCols[rank]; i++) {
+	z = createRealArray (nn);
         fstinv_(b[i], &n, z, &nn);
+	printf("Thread: %d \n", omp_get_thread_num());
     }
 
     // Find the eigenvalues (b is now transposed, but does not matter here)
+    #pragma omp parallel for private(i)
     for (j=0; j < numberOfCols[rank]; j++) {
         for (i=0; i < m; i++) {
             b[j][i] = b[j][i]/(diag[i] + diag[j + startCol[rank]]);
         }
     }
+    
 
+    //Comment: Do not use all threads..!
+    #pragma omp parallel
+    z    = createRealArray (nn);
+    #pragma omp for
     for (i=0; i < numberOfCols[rank]; i++) {
         fst_(b[i], &n, z, &nn);
     }
 
     transpose(b, numberOfCols, startCol, sendbuffer,rbuffer);
 
+    #pragma omp parallel
+    z    = createRealArray (nn);
+    #pragma omp for
     for (i=0; i < numberOfCols[rank]; i++) {
         fstinv_(b[i], &n, z, &nn);
     }  
