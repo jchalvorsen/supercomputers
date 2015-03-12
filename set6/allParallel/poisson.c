@@ -72,6 +72,9 @@ int main(int argc, char **argv )
     }
 
     // Assigning constants
+    // Buffer for sine transform
+    nn = 4*n;
+    z    = createRealArray (nn);
     // b will have a different sizes given thread
     b    = createReal2DArray (numberOfCols[rank],m);
 
@@ -90,8 +93,38 @@ int main(int argc, char **argv )
             b[j][i] = i + m*j + startCol[rank]*m + 1;
         }
     }
+
+    // Do the first sine transform:
+    //for (i=0; i < numberOfCols[rank]; i++) {
+    //    fst_(b[i], &n, z, &nn);
+    //}
+
+    // TODO: transpose the matrix
+    Real *sendbuffer;
+    temp = createRealArray (m*numberOfCols[rank]);
+    int count = 0;
+    int p;
+    for (p = 0; p < size; ++p){
+        for (i = 0; i < numberOfCols[rank]; ++i){
+            for (j = 0; j < numberOfCols[p]; ++j){
+                sendbuffer[count] = b[i][j + startCol[p]];
+                count += 1;
+            }
+        }
+    }
+    if (rank == 1){
     printf("Proc number %d says hi: \n", rank);
-    printMatrix(b, numberOfCols[rank], m);
+    printVector(temp, m*numberOfCols[rank]);
+    }
+
+    // Do the second sine transform
+    //for (i=0; i < numberOfCols[rank]; i++) {
+    //    fstinv_(b[i], &n, z, &nn);
+    //}
+
+
+    //printf("Proc number %d says hi: \n", rank);
+    //printMatrix(b, numberOfCols[rank], m);
 
     MPI_Finalize();
     return 0;
