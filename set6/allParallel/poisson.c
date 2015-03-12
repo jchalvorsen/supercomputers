@@ -30,7 +30,7 @@ int main(int argc, char **argv )
 {
     Real *diag, **b, *z;
     Real pi, h, umax;
-    int i, j, n, m, , rank, size;
+    int i, j, n, m, nn , rank, size;
 
     // initialize MPI and get arguments
     MPI_Init(&argc, &argv);
