@@ -2,5 +2,7 @@ CMakeCache.txt
 CMakeFiles
 Makefile
 *.cmake
+*.user
+*.cbp
 
 poisson
