@@ -132,6 +132,10 @@ int main(int argc, char **argv )
     if(rank == 0){
         printf (" umax = %e \n",globalsum[0]);
     }
+    free(diag);
+    free(b);
+    free(z);
+    free(buffer);
     MPI_Finalize();
     return 0;
 }
@@ -175,6 +179,8 @@ void transpose(Real **b, Real *buffer, int *numberOfCols, int *startCol)
             }
         }
     }
+    free(srdispls);
+    free(srcounts);
 }
 
 void printMatrix(Real **m, int x, int y){
