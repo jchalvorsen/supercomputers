@@ -137,7 +137,9 @@ int main(int argc, char **argv )
     free(diag);
     free(b);
     free(z);
-    free(buffer);
+    free(sendbuffer);
+    free(rbuffer);
+    free(globalsum);
     MPI_Finalize();
     return 0;
 }
