@@ -24,7 +24,7 @@ Real **createReal2DArray (int m, int n);
 void transpose (Real **bt, Real **b, int m);
 void fst_(Real *v, int *n, Real *w, int *nn);
 void fstinv_(Real *v, int *n, Real *w, int *nn);
-
+void printMatrix(Real **m, int x, int y);
 
 int main(int argc, char **argv )
 {
@@ -98,6 +98,7 @@ int main(int argc, char **argv )
       if (b[j][i] > umax) umax = b[j][i];
     }
   }
+  //printMatrix(b,m,m);
   printf (" umax = %e \n",umax);
   MPI_Finalize();
   return 0;
@@ -137,3 +138,13 @@ Real **createReal2DArray (int n1, int n2)
   memset(a[0],0,n*sizeof(Real));
   return (a);
 }
+void printMatrix(Real **m, int x, int y){ 
+	int i, j; 	
+	for (j=0; j < y; j++) { 
+		for (i=0; i < x; i++) { 
+			printf("|%e ",m[i][j]); 
+		} 
+		printf("| \n"); 
+	} 
+}
+
