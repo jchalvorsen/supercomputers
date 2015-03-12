@@ -42,39 +42,56 @@ int main(int argc, char **argv )
     /* the total number of grid points in each spatial direction is (n+1) */
     /* the total number of degrees-of-freedom in each spatial direction is (n-1) */
     /* this version requires n to be a power of 2 */
-    if (rank == 0){
-        if( argc < 2 ) {
-            printf("need a problem size\n");
-            return 1;
-        }
-
-        n  = atoi(argv[1]);
-        m  = n-1;
-        nn = 4*n;
-
-        diag = createRealArray (m);
-        b    = createReal2DArray (m,m);
-        bt   = createReal2DArray (m,m);
-        z    = createRealArray (nn);
-
-        h    = 1./(Real)n;
-        pi   = 4.*atan(1.);
-
-        // Assigning constants
-        for (i=0; i < m; i++) {
-            diag[i] = 2.*(1.-cos((i+1)*pi/(Real)n));
-        }
-        for (j=0; j < m; j++) {
-            for (i=0; i < m; i++) {
-                b[j][i] = i + m*j;
-            }
-        }
-        printMatrix(b, m, m);
+    if( argc < 2 ) {
+        printf("need a problem size\n");
+        return 1;
     }
 
-    //if (rank != 0){
-    printf("proc nr %d says hi \n", rank);
-    //}
+    n  = atoi(argv[1]);
+    m  = n-1;
+
+
+    // Deciding what processor gets what data.
+    int *numberOfCols = malloc( size * sizeof(int) );
+    numberOfCols[0] = m/size;
+    if (size > 1){
+        for (i = 1; i < size; ++i){
+            numberOfCols[i] = n/size;
+        }
+    }
+    int *startCol = malloc( size * sizeof(int) );
+    startCol[0] = 0;
+
+    if (size > 1){
+        startCol[1] = m/size;
+        if (size > 2){
+            for (i = 2; i < size; ++i){
+                startCol[i] = startCol[i-1] + n/size;
+            }
+        }
+    }
+
+    // Assigning constants
+    // b will have a different sizes given thread
+    b    = createReal2DArray (numberOfCols[rank],m);
+
+    h    = 1./(Real)n;
+    pi   = 4.*atan(1.);
+
+    // diag should be available to all threads
+    diag = createRealArray (m);
+    for (i=0; i < m; i++) {
+        diag[i] = 2.*(1.-cos((i+1)*pi/(Real)n));
+    }
+
+    // Fill in values in b. TODO: map from loading function
+    for (j=0; j < numberOfCols[rank]; j++) {
+        for (i=0; i < m; i++) {
+            b[j][i] = i + m*j + startCol[rank]*m + 1;
+        }
+    }
+    printf("Proc number %d says hi: \n", rank);
+    printMatrix(b, numberOfCols[rank], m);
 
     MPI_Finalize();
     return 0;
