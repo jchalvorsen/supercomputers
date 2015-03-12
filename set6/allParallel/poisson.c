@@ -171,26 +171,18 @@ int main(int argc, char **argv )
         fstinv_(b[i], &n, z, &nn);
     }
 
-//    if (rank == 1){
-//        printf("Proc number %d says hi: \n", rank);
-//        printMatrix(b, numberOfCols[rank], m);
-//    }
-
-    // Print the max stuff:
+    // Get max and max-reduce
     umax = 0.0;
     for (j=0; j < numberOfCols[rank]; j++) {
         for (i=0; i < m; i++) {
             if (b[j][i] > umax) umax = b[j][i];
         }
     }
-    printf (" umax = %e , thread %d \n",umax, rank);
-
-
-
-
-    //printf("Proc number %d says hi: \n", rank);
-    //printMatrix(b, numberOfCols[rank], m);
-
+    double *globalsum = malloc(sizeof(double));
+    MPI_Reduce(&umax,globalsum,1,MPI_DOUBLE,MPI_MAX,0,MPI_COMM_WORLD);
+    if(rank == 0){
+        printf (" umax = %e \n",globalsum[0]);
+    }
     MPI_Finalize();
     return 0;
 }
