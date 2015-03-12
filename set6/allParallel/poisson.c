@@ -24,11 +24,11 @@ void fst_(Real *v, int *n, Real *w, int *nn);
 void fstinv_(Real *v, int *n, Real *w, int *nn);
 void printMatrix(Real **m, int x, int y);
 void printVector(Real *v, int n);
-void transpose(Real **b, Real *buffer, int *numberOfCols, int *startCol);
+void transpose(Real **b, int *numberOfCols, int *startCol, Real *sendbuffer, Real *rbuffer);
 
 int main(int argc, char **argv )
 {
-    Real *diag, **b, *z, *buffer;
+    Real *diag, **b, *z, *sendbuffer, *rbuffer;
     Real pi, h, umax;
     int i, j, n, m, nn , rank, size;
 
@@ -68,8 +68,9 @@ int main(int argc, char **argv )
     nn = 4*n;
     z    = createRealArray (nn);
 
-    // buffer for transpose
-    buffer = createRealArray (m*numberOfCols[rank]);
+    // buffers for transpose
+    sendbuffer = createRealArray (m*numberOfCols[rank]);
+    rbuffer = createRealArray (m*numberOfCols[rank]);
 
     // b will have a different sizes given thread
     b    = createReal2DArray (numberOfCols[rank],m);
@@ -90,11 +91,12 @@ int main(int argc, char **argv )
     //                      //
     // Start of algorithm   //
     //                      //
+
     for (i=0; i < numberOfCols[rank]; i++) {
         fst_(b[i], &n, z, &nn);
     }
 
-    transpose(b, buffer, numberOfCols, startCol);
+    transpose(b, numberOfCols, startCol, sendbuffer,rbuffer);
 
     for (i=0; i < numberOfCols[rank]; i++) {
         fstinv_(b[i], &n, z, &nn);
@@ -111,7 +113,7 @@ int main(int argc, char **argv )
         fst_(b[i], &n, z, &nn);
     }
 
-    transpose(b, buffer, numberOfCols, startCol);
+    transpose(b, numberOfCols, startCol, sendbuffer,rbuffer);
 
     for (i=0; i < numberOfCols[rank]; i++) {
         fstinv_(b[i], &n, z, &nn);
@@ -140,7 +142,7 @@ int main(int argc, char **argv )
     return 0;
 }
 
-void transpose(Real **b, Real *buffer, int *numberOfCols, int *startCol)
+void transpose(Real **b, int *numberOfCols, int *startCol, Real *sendbuffer, Real *rbuffer)
 {
     // Transpose the matrix b in place over MPI
 
@@ -152,14 +154,11 @@ void transpose(Real **b, Real *buffer, int *numberOfCols, int *startCol)
     for (p = 0; p < size; ++p){
         for (i = 0; i < numberOfCols[rank]; ++i){
             for (j = 0; j < numberOfCols[p]; ++j){
-                buffer[count] = b[i][j + startCol[p]];
+                sendbuffer[count] = b[i][j + startCol[p]];
                 count += 1;
             }
         }
     }
-    // Shuffle memory so we only need one buffer.
-    // Buffer is now recycled so we can receive in it
-    b[0] = buffer;
 
     int *srdispls = malloc( size * sizeof(int) );
     int *srcounts = malloc( size * sizeof(int) );
@@ -167,20 +166,18 @@ void transpose(Real **b, Real *buffer, int *numberOfCols, int *startCol)
         srcounts[i] = numberOfCols[i]*numberOfCols[rank];
         srdispls[i] = startCol[i]*numberOfCols[rank];
     }
-    MPI_Alltoallv(b[0], srcounts, srdispls, MPI_DOUBLE, buffer, srcounts, srdispls, MPI_DOUBLE, MPI_COMM_WORLD);
+    MPI_Alltoallv(sendbuffer, srcounts, srdispls, MPI_DOUBLE, rbuffer, srcounts, srdispls, MPI_DOUBLE, MPI_COMM_WORLD);
 
     // Taking the data back to b
     count = 0;
     for (p = 0; p < size; ++p){
         for (i = 0; i < numberOfCols[p]; ++i){
             for (j = 0; j < numberOfCols[rank]; ++j){
-                b[j][i + startCol[p]] = buffer[count];
+                b[j][i + startCol[p]] = rbuffer[count];
                 count += 1;
             }
         }
     }
-    free(srdispls);
-    free(srcounts);
 }
 
 void printMatrix(Real **m, int x, int y){
