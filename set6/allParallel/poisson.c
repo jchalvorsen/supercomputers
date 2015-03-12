@@ -112,8 +112,6 @@ int main(int argc, char **argv )
             }
         }
     }
-    printf("Proc number %d says hi: \n", rank);
-    printMatrix(b, numberOfCols[rank], m);
 
     int *srdispls = malloc( size * sizeof(int) );
     int *srcounts = malloc( size * sizeof(int) );
@@ -126,15 +124,22 @@ int main(int argc, char **argv )
     rbuffer = createRealArray (m*numberOfCols[rank]);
 
     MPI_Alltoallv(sendbuffer, srcounts, srdispls, MPI_DOUBLE, rbuffer, srcounts, srdispls, MPI_DOUBLE, MPI_COMM_WORLD);
-    //MPI_Alltoallv(const void *sendbuf, const int *sendcounts,
-    //                  const int *sdispls, MPI_Datatype sendtype, void *recvbuf,
-    //                  const int *recvcounts, const int *rdispls, MPI_Datatype recvtype,
-    //                  MPI_Comm comm)
+
+    // Taking the data back to b
+    count = 0;
+    for (p = 0; p < size; ++p){
+        for (i = 0; i < numberOfCols[p]; ++i){
+            for (j = 0; j < numberOfCols[rank]; ++j){
+                b[j][i + startCol[p]] = rbuffer[count];
+                count += 1;
+            }
+        }
+    }
 
 
-    if (rank == 0){
-    printf("Proc number %d says hi: \n", rank);
-    printVector(rbuffer, m*numberOfCols[rank]);
+    if (rank == 1){
+        printf("Proc number %d says hi: \n", rank);
+        printMatrix(b, numberOfCols[rank], m);
     }
 
     // Do the second sine transform
