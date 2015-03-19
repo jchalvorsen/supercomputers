@@ -117,7 +117,7 @@ int main(int argc, char **argv )
     for (i=0; i < numberOfCols[rank]; i++) {
 	z = createRealArray (nn);
         fstinv_(b[i], &n, z, &nn);
-	printf("Thread: %d \n", omp_get_thread_num());
+    printf("Thread: %d \n", omp_get_thread_num());
     }
 
     // Find the eigenvalues (b is now transposed, but does not matter here)
@@ -160,7 +160,23 @@ int main(int argc, char **argv )
     MPI_Reduce(&umax,globalsum,1,MPI_DOUBLE,MPI_MAX,0,MPI_COMM_WORLD);
     if(rank == 0){
         printf (" umax = %e \n",globalsum[0]);
+        // Print to file:
+        FILE *f = fopen("out.txt", "a");
+        if (f == NULL)
+        {
+            printf("Error opening file!\n");
+            exit(1);
+        }
+
+        /* print some text */
+        fprintf(f,"umax = %e \n",globalsum[0]);
+
+        fclose(f);
     }
+
+
+
+
     free(diag);
     free(b);
     free(z);
