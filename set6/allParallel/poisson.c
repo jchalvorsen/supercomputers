@@ -25,10 +25,16 @@ void fstinv_(Real *v, int *n, Real *w, int *nn);
 void printMatrix(Real **m, int x, int y);
 void printVector(Real *v, Real n);
 void transpose(Real **b, int *numberOfCols, int *startCol, Real *sendbuffer, Real *rbuffer);
+Real loadingFunction(Real x, Real y){
+    return 5*M_PI*M_PI*(sin(2*M_PI*x)*sin(M_PI*y));
+}
+Real u(Real x, Real y){
+    return sin(2*M_PI*x)*sin(M_PI*y);
+}
 
 int main(int argc, char **argv )
 {
-    Real *diag, **b, *z, *sendbuffer, *rbuffer;
+    Real *diag, **b, **us, *z, *sendbuffer, *rbuffer;
     Real pi, h, umax;
     int i, j, n, m, nn , rank, size, rest, *numberOfCols,*startCol,tcount;
 
@@ -81,6 +87,7 @@ int main(int argc, char **argv )
 
     // b will have a different sizes given thread
     b    = createReal2DArray (numberOfCols[rank],m);
+    us    = createReal2DArray (numberOfCols[rank],m);
 
     // diag should be available to all threads
     diag = createRealArray (m);
@@ -93,9 +100,17 @@ int main(int argc, char **argv )
     #pragma omp parallel for private(i)
     for (j=0; j < numberOfCols[rank]; j++) {
         for (i=0; i < m; i++) {
-            b[j][i] = h*h;//i + m*j + startCol[rank]*m + 1;
+            b[j][i] = h*h * loadingFunction(h*(j + startCol[rank] +1), (i+1)*h);
         }
     }
+    //printMatrix(b, numberOfCols[rank], m);
+
+    for (j=0; j < numberOfCols[rank]; j++) {
+        for (i=0; i < m; i++) {
+            us[j][i] = u(h*(j + startCol[rank] +1), (i+1)*h);
+        }
+    }
+    //printMatrix(us, numberOfCols[rank], m);
 
     //                      //
     // Start of algorithm   //
@@ -154,17 +169,25 @@ int main(int argc, char **argv )
     // End of algorithmnts  //
     //                      //
 
-    // Get max and max-reduce
+    // Get error and error-reduce
     umax = 0.0;
+    Real diff = 0;
     for (j=0; j < numberOfCols[rank]; j++) {
         for (i=0; i < m; i++) {
-            if (b[j][i] > umax) umax = b[j][i];
+            diff = fabs(b[j][i] - us[j][i]);
+            //printf("b = %e, us = %e, diff = %e , umax = %e\n", b[j][i], us[j][i], diff, umax );
+            if (diff > umax){
+                //printf("HEIIEHEI");
+                umax = diff;
+            }
         }
     }
+    //printf("umax = %e", umax);
     double *globalsum = malloc(sizeof(double));
     MPI_Reduce(&umax,globalsum,1,MPI_DOUBLE,MPI_MAX,0,MPI_COMM_WORLD);
     if(rank == 0){
-        printf (" umax = %e \n",globalsum[0]);
+        //printMatrix(b, numberOfCols[rank], m);
+        printf ("n = %d, #proc = %d, max error = %e \n",n, size, globalsum[0]);
         // Print to file:
         FILE *f = fopen("out.txt", "a");
         if (f == NULL)
@@ -174,7 +197,7 @@ int main(int argc, char **argv )
         }
 
         /* print some text */
-        fprintf(f,"umax = %e \n",globalsum[0]);
+        fprintf(f,"n = %d, #proc = %d, max error = %e \n",n, size, globalsum[0]);
 
         fclose(f);
     }
