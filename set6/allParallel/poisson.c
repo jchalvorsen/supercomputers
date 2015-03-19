@@ -23,7 +23,7 @@ Real **createReal2DArray (int m, int n);
 void fst_(Real *v, int *n, Real *w, int *nn);
 void fstinv_(Real *v, int *n, Real *w, int *nn);
 void printMatrix(Real **m, int x, int y);
-void printVector(int *v, int n);
+void printVector(Real *v, Real n);
 void transpose(Real **b, int *numberOfCols, int *startCol, Real *sendbuffer, Real *rbuffer);
 
 int main(int argc, char **argv )
@@ -173,9 +173,15 @@ int main(int argc, char **argv )
 
         fclose(f);
     }
+    // MPI IO print to file:
 
+//    MPI_File fh;
+//    MPI_File_open(MPI_COMM_WORLD, "out2.dat", MPI_MODE_WRONLY|MPI_MODE_CREATE, MPI_INFO_NULL, &fh);
 
+//    MPI_Offset offset = startCol[rank]*m;
 
+//    MPI_File_iwrite_at(fh, offset, b[0], numberOfCols[rank]*m, MPI_DOUBLE, MPI_STATUS_IGNORE);
+//    MPI_File_close(&fh);
 
     free(diag);
     free(b);
@@ -237,7 +243,7 @@ void printMatrix(Real **m, int x, int y){
     }
 }
 
-void printVector(int *v, int n){
+void printVector(Real *v, Real n){
     int i;
     for (i = 0; i < n; i++){
         printf("%d \n", v[i]);
