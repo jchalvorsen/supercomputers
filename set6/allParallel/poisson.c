@@ -35,13 +35,15 @@ Real u(Real x, Real y){
 int main(int argc, char **argv )
 {
     Real *diag, **b, *z, *sendbuffer, *rbuffer;
-    Real pi, h, umax;
+    Real pi, h, umax, t1, dt;
     int i, j, n, m, nn , rank, size, rest, *numberOfCols,*startCol,tcount;
+
 
     // initialize MPI and get arguments
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    t1 = MPI_Wtime();
 
     /* the total number of grid points in each spatial direction is (n+1) */
     /* the total number of degrees-of-freedom in each spatial direction is (n-1) */
@@ -175,9 +177,11 @@ int main(int argc, char **argv )
     //printf("umax = %e", umax);
     double *globalsum = malloc(sizeof(double));
     MPI_Reduce(&umax,globalsum,1,MPI_DOUBLE,MPI_MAX,0,MPI_COMM_WORLD);
+    dt = MPI_Wtime() - t1;
+
     if(rank == 0){
         //printMatrix(b, numberOfCols[rank], m);
-        printf ("n = %d, #proc = %d, max error = %e \n",n, size, globalsum[0]);
+        printf ("%d, %d, %d, %e, %f \n",n, size, omp_get_num_threads( ), globalsum[0], dt);
         // Print to file:
         FILE *f = fopen("out.txt", "a");
         if (f == NULL)
@@ -187,7 +191,7 @@ int main(int argc, char **argv )
         }
 
         /* print some text */
-        fprintf(f,"n = %d, #proc = %d, max error = %e \n",n, size, globalsum[0]);
+        fprintf(f,"%d, %d, %d, %e, %f \n",n, size, omp_get_num_threads( ), globalsum[0], dt);
 
         fclose(f);
     }
