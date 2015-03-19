@@ -1,0 +1,66 @@
+\documentclass[10pt, a4paper]{article} %Definerer skriftstørrelse, arktrype( eks a0paper, ..., a6paper, letterpaper....), dokumenttype(article, report, book, letter, beamer(presentasjon).   
+\usepackage[font=small, labelfont=bf]{caption}
+\usepackage{graphicx}
+\usepackage{amsmath, amssymb} %  matematiske funskjoner og symboler. 
+\usepackage{listings}
+\usepackage{url} % urls in the bibliograpy
+\usepackage[utf8]{inputenc} % 
+\usepackage{float}  %
+\usepackage{subcaption} % NOT compatible with the subfig package
+\usepackage{authblk}
+\usepackage{siunitx}
+
+
+
+\usepackage[ 
+total={250mm,297mm},  
+left=25mm,
+ right=25mm,
+ top=10mm,
+ bottom=20mm]{geometry} % kan endre på marger 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Gode infosider:
+% https://no.sharelatex.com/learn/Creating_a_document_in_LaTeX 
+% https://no.sharelatex.com/learn/Page_size_and_margins
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Det som inkluderes i \maketitle
+\title{Report project superpercomuters}
+\author[]{Jon Christian Halvorsen, Monica Kappelslåen Plassen, Anette Fossum Morken}
+\date{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\maketitle
+
+%\begin{abstract}
+
+%\end{abstract}
+
+\section*{Theory}
+In this project we are studying the two-dimensional Poisson problem
+\begin{align}
+-\nabla^2u&=f \quad\quad\text{ in } \Omega=(0,1)\times(0,1)\\
+u&=0 \quad\quad\text{ on } \partial \Omega, \nonumber
+\label{Poisson}
+\end{align}
+where $f$ is given load function and $u$ is the solution. We have been using two different load functions
+\begin{align*}
+f(x,y)&=1
+\end{align*}
+and
+\begin{align}
+f(x,y)&=5\pi^2\sin(2\pi x)\sin(\pi y) \quad\text{with exact solution} \\
+u(x,y)&=\sin(2\pi x)\sin(\pi y).\nonumber
+\label{loadfunc2}
+\end{align}
+We discretize the Laplace operator with the five-point stencil and use regular finite difference grid with $(n+1)$ points in each direction. To solve the resulting algebraic system, we apply a diagonalization method using Discrete sine transforms.  
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% REFERANSER
+%\nocite{*} %gjør at alle kilder vises ikke bare de det refereres til.
+%\addcontentsline{toc}{section}{Kilder} % Setter kilder inn i innholdsfortegnelsen
+%\renewcommand{\refname}{Kilder} % Endrer overkriften fra References til Kilder
+%\bibliographystyle{plain}
+%\bibliography{mal_Latex}
+\end{document}
