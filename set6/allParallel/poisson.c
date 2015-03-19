@@ -34,7 +34,7 @@ Real u(Real x, Real y){
 
 int main(int argc, char **argv )
 {
-    Real *diag, **b, **us, *z, *sendbuffer, *rbuffer;
+    Real *diag, **b, *z, *sendbuffer, *rbuffer;
     Real pi, h, umax;
     int i, j, n, m, nn , rank, size, rest, *numberOfCols,*startCol,tcount;
 
@@ -87,7 +87,6 @@ int main(int argc, char **argv )
 
     // b will have a different sizes given thread
     b    = createReal2DArray (numberOfCols[rank],m);
-    us    = createReal2DArray (numberOfCols[rank],m);
 
     // diag should be available to all threads
     diag = createRealArray (m);
@@ -96,21 +95,13 @@ int main(int argc, char **argv )
         diag[i] = 2.*(1.-cos((i+1)*pi/(Real)n));
     }
 
-    // Fill in values in b. TODO: map from loading function
+    // Fill in values in b
     #pragma omp parallel for private(i)
     for (j=0; j < numberOfCols[rank]; j++) {
         for (i=0; i < m; i++) {
             b[j][i] = h*h * loadingFunction(h*(j + startCol[rank] +1), (i+1)*h);
         }
     }
-    //printMatrix(b, numberOfCols[rank], m);
-
-    for (j=0; j < numberOfCols[rank]; j++) {
-        for (i=0; i < m; i++) {
-            us[j][i] = u(h*(j + startCol[rank] +1), (i+1)*h);
-        }
-    }
-    //printMatrix(us, numberOfCols[rank], m);
 
     //                      //
     // Start of algorithm   //
@@ -174,8 +165,7 @@ int main(int argc, char **argv )
     Real diff = 0;
     for (j=0; j < numberOfCols[rank]; j++) {
         for (i=0; i < m; i++) {
-            diff = fabs(b[j][i] - us[j][i]);
-            //printf("b = %e, us = %e, diff = %e , umax = %e\n", b[j][i], us[j][i], diff, umax );
+            diff = fabs(b[j][i] - u(h*(j + startCol[rank] +1), (i+1)*h));
             if (diff > umax){
                 //printf("HEIIEHEI");
                 umax = diff;
@@ -274,7 +264,7 @@ void printMatrix(Real **m, int x, int y){
 void printVector(Real *v, Real n){
     int i;
     for (i = 0; i < n; i++){
-        printf("%d \n", v[i]);
+        printf("%f \n", v[i]);
     }
 }
 
