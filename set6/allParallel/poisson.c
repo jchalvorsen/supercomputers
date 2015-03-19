@@ -30,7 +30,7 @@ int main(int argc, char **argv )
 {
     Real *diag, **b, *z, *sendbuffer, *rbuffer;
     Real pi, h, umax;
-    int i, j, n, m, nn , rank, size, rest, *numberOfCols,*startCol;
+    int i, j, n, m, nn , rank, size, rest, *numberOfCols,*startCol,tcount;
 
     // initialize MPI and get arguments
     MPI_Init(&argc, &argv);
@@ -100,24 +100,25 @@ int main(int argc, char **argv )
     //                      //
     // Start of algorithm   //
     //                      //
+     
     
-    #pragma omp parallel
-    z    = createRealArray (nn);
-    #pragma omp for
-    for (i=0; i < numberOfCols[rank]; i++) {
-        fst_(b[i], &n, z, &nn);
+    #pragma omp parallel shared(b) private(z)
+    {
+	    z    = createRealArray (nn);
+	    #pragma omp for 
+	    for (i=0; i < numberOfCols[rank]; i++) {
+		fst_(b[i], &n, z, &nn);
+	    }
     }
-
     transpose(b, numberOfCols, startCol, sendbuffer,rbuffer);
 
-
-
-    #pragma omp parallel for
-    //COMMENT: Can we avoid makign a new buffer for each thread??
-    for (i=0; i < numberOfCols[rank]; i++) {
-	z = createRealArray (nn);
-        fstinv_(b[i], &n, z, &nn);
-	printf("Thread: %d \n", omp_get_thread_num());
+    #pragma omp parallel shared(b) private(z)
+    {
+	    z = createRealArray (nn);
+  	    #pragma omp for 
+	    for (i=0; i < numberOfCols[rank]; i++) {
+		fstinv_(b[i], &n, z, &nn);
+	    }
     }
 
     // Find the eigenvalues (b is now transposed, but does not matter here)
@@ -130,20 +131,24 @@ int main(int argc, char **argv )
     
 
     //Comment: Do not use all threads..!
-    #pragma omp parallel
-    z    = createRealArray (nn);
-    #pragma omp for
-    for (i=0; i < numberOfCols[rank]; i++) {
-        fst_(b[i], &n, z, &nn);
+    #pragma omp parallel shared(b) private(z)
+    {
+	    z    = createRealArray (nn);
+	    #pragma omp for 
+	    for (i=0; i < numberOfCols[rank]; i++) {
+		fst_(b[i], &n, z, &nn);
+	    }
     }
 
     transpose(b, numberOfCols, startCol, sendbuffer,rbuffer);
 
-    #pragma omp parallel
-    z    = createRealArray (nn);
-    #pragma omp for
-    for (i=0; i < numberOfCols[rank]; i++) {
-        fstinv_(b[i], &n, z, &nn);
+    #pragma omp parallel shared(b) private(z)
+    {
+	    z    = createRealArray (nn);
+	    #pragma omp for
+	    for (i=0; i < numberOfCols[rank]; i++) {
+		fstinv_(b[i], &n, z, &nn);
+	    }
     }  
     //                      //
     // End of algorithmnts  //
