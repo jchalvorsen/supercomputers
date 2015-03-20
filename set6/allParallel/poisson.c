@@ -137,10 +137,11 @@ int main(int argc, char **argv )
         }
     }
     
-
+    int numThreads;
     //Comment: Do not use all threads..!
     #pragma omp parallel shared(b) private(z)
     {
+        numThreads = omp_get_num_threads( );
 	    z    = createRealArray (nn);
 	    #pragma omp for 
 	    for (i=0; i < numberOfCols[rank]; i++) {
@@ -181,7 +182,7 @@ int main(int argc, char **argv )
 
     if(rank == 0){
         //printMatrix(b, numberOfCols[rank], m);
-        printf ("%d, %d, %d, %e, %f \n",n, size, omp_get_num_threads( ), globalsum[0], dt);
+        printf ("%d, %d, %d, %e, %f \n",n, size, numThreads, globalsum[0], dt);
         // Print to file:
         FILE *f = fopen("out.txt", "a");
         if (f == NULL)
@@ -191,7 +192,7 @@ int main(int argc, char **argv )
         }
 
         /* print some text */
-        fprintf(f,"%d, %d, %d, %e, %f \n",n, size, omp_get_num_threads( ), globalsum[0], dt);
+        fprintf(f,"%d, %d, %d, %e, %f \n",n, size, numThreads, globalsum[0], dt);
 
         fclose(f);
     }
