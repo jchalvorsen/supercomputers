@@ -3,6 +3,7 @@ How to compile and run on kongull cluster:
 - Copy poisson.c, fst.f, CMakeLists.txt and all the jobscripts to kongull
 - module load intelcomp
 - module load openmpi/1.4.3-intel
+- module load cmake
 - CC=icc FC=ifort cmake CMakeLists.txt
 - make
 
