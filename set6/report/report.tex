@@ -73,6 +73,21 @@ Finding $\mathbf{\widetilde{U}}$ from \eqref{system2} is a simple calculation, a
 \\
 \\
 Let $\mathbf{S}$ denote the discrete sine transform, and $\mathbf{S}^{-1}$ be the inverse transform. We can now express $\mathbf{Q} = \sqrt{\frac{N}{2}\mathbf{S}}$ and $\mathbf{Q}^T = \sqrt{\frac{2}{N}}\mathbf{S}^{-1}$, and therefore $\mathbf{\widetilde{B}} = \mathbf{S}^{-1}((\mathbf{SB})^T)$ and $\mathbf{U} = \mathbf{S}^{-1}(\mathbf{S}(\mathbf{\widetilde{U}}^T))^T$. Both of these operations can be done in $\mathcal{O}((N^2\log{N})$ time. 
+
+\section*{Our code}
+We solved this problem with our program. The pseudocode to our program is shown i figure ..... 
+
+
+
+\section*{Results}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\linewidth, trim= 3cm 8.5cm 3cm 9cm, clip=true]{checkConv}
+\caption{Shows that our program concerges with $O(h^2)$.}
+\label{fig:checkConv}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % REFERANSER
 %\nocite{*} %gjør at alle kilder vises ikke bare de det refereres til.
