@@ -15,7 +15,7 @@ ylabel('max error')
 
 
 figure
-Tt = sortrows(readtable('varyp.txt'))
+Tt = sortrows(readtable('varyt.txt'))
 plot(Tt{:,2},Tt{:,5})
 n = Tt{1,1};
 xlabel('Number of processors')
