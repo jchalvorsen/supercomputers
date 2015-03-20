@@ -10,6 +10,7 @@ loglog(ns, 1./ns)
 legend('Our data','quadratic convergence','linear convergence') 
 xlabel('problem size n')
 ylabel('max error')
+saveas(gcf,'../report/figures/checkConv.pdf')
 
 % Check how runtime scales with n
 figure
@@ -29,6 +30,7 @@ n = Tt{1,1};
 xlabel('Number of processors')
 ylabel('Runtime in seconds')
 string = sprintf('Runtime for n = %d \n with p*t = 36', n);
+saveas(gcf,'../report/figures/runtime.pdf')
 legend(string)
 
 
@@ -42,9 +44,11 @@ Sp = t(1)./t;
 plot(p, Sp, '*-')
 ylabel('Speedup')
 xlabel('Processors')
+saveas(gcf,'../report/figures/speedup.pdf')
 
 figure
 np = Sp./p;
 plot(p, np, '*-')
 ylabel('Parallel efficiacy');
 xlabel('Processors');
+saveas(gcf,'../report/figures/efficiacy.pdf')
