@@ -55,6 +55,19 @@ u(x,y)&=\sin(2\pi x)\sin(\pi y).\nonumber
 \end{align}
 We discretize the Laplace operator with the five-point stencil and use regular finite difference grid with $(n+1)$ points in each direction. To solve the resulting algebraic system, we apply a diagonalization method using Discrete sine transforms.  
 
+\section*{Our code}
+We solved this problem with our program. The pseudocode to our program is shown i figure ..... 
+
+
+
+\section*{Results}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\linewidth, trim= 3cm 8.5cm 3cm 9cm, clip=true]{checkConv}
+\caption{Shows that our program concerges with $O(h^2)$.}
+\label{fig:checkConv}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % REFERANSER
