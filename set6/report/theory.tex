@@ -1,8 +1,8 @@
 In this project we are studying the two-dimensional Poisson problem
-\begin{align}
+\begin{align}\\
+\label{Poisson}
 -\nabla^2u&=f \quad\quad\text{ in } \Omega=(0,1)\times(0,1)\\
 u&=0 \quad\quad\text{ on } \partial \Omega, \nonumber
-\label{Poisson}
 \end{align}
 where $f$ is given load function and $u$ is the solution. We have been using two different load functions
 \begin{align*}
@@ -10,9 +10,9 @@ f(x,y)&=1
 \end{align*}
 and
 \begin{align}
+\label{loadfunc2}
 f(x,y)&=5\pi^2\sin(2\pi x)\sin(\pi y) \quad\text{with exact solution} \\
 u(x,y)&=\sin(2\pi x)\sin(\pi y).\nonumber
-\label{loadfunc2}
 \end{align}
 We discretize the Laplace operator with the five-point stencil and use regular finite difference grid with $(n+1)$ points in each direction and use a local numbering scheme. This results in a SPD algebraic system
 \begin{equation}
