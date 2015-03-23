@@ -41,8 +41,8 @@ with the parallel\_transpose function as follows.
  Order the elements correctly in memory according to a transpose operation and return as $\mathbf{Z}$.
  \label{code:transpose}
 \end{algorithm}
-We split the load matrix column wise and notices that the parallel\_transpose function preserves the nice data structure on each node. We chose to implement the sending and receiving of data in the transpose function as an MPI_Alltoallv call after laying out the elements in a correct linear layout first. Unpacking the data after the MPI call is just using the same structure to get it back, only remembering that we need to transpose the data.
+We split the load matrix column wise and notices that the parallel\_transpose function preserves the nice data structure on each node. We chose to implement the sending and receiving of data in the transpose function as an MPI\_Alltoallv call after laying out the elements in a correct linear layout first. Unpacking the data after the MPI call is just using the same structure to get it back, only remembering that we need to transpose the data.
 
-Furthermore, the gathering of data into one big $\mathbf{U}$ is not really necessary. We could either use MPI\_IO to write to disk or we're not interested in the matrix at all (say you're interested in the error or the computation time) we can just return that instead. All in all, this should be a really effective parallelization of the serial code since we severely limit the amount of network operations we have to do (only two MPI_Alltoallv and one MPI_Gather if we need result).
+Furthermore, the gathering of data into one big $\mathbf{U}$ is not really necessary. We could either use MPI\_IO to write to disk or we're not interested in the matrix at all (say you're interested in the error or the computation time) we can just return that instead. All in all, this should be a really effective parallelization of the serial code since we severely limit the amount of network operations we have to do (only two MPI\_Alltoallv and one MPI\_Gather if we need result).
 
 \subsection*{OpenMP parallelization}
