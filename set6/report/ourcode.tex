@@ -1,1 +1,47 @@
-We solved this problem with our program. The pseudocode to our program is shown i figure .....
+Converting the serial code in algorithm \ref{code:serial} to parallel is split in two parts, one part for using MPI and one part for using openMP. Since the MPI code needs most drastic change we start with that.
+
+\subsection*{MPI parallelization}
+Inspection of the code in algorithm \ref{code:serial} reveals the following tricks that enable us to write parallel code from the start to the end: (in the following a node is referred to as one MPI processor)
+\begin{itemize}
+\item Each node can compute the needed part from $\textbf{B}$.
+\item The whole $\lambda$ vector is needed in each node given that we split $\textbf{B}$ column or row wise.
+\item Given the above two points, the only time we need to exchange data from node to node is in the transpose function (and when we gather the results).
+\end{itemize}
+
+The new pseudocode for our parallel code then becomes:
+
+\begin{algorithm}[H]
+ \KwData{$b(x,y)$ The load function.}
+ \KwData{$\mathbf{\widetilde{X}}$, buffer to store intermediate results.}
+ \KwData{$\mathbf{S}$ the discrete fourier transform operator.}
+ \KwResult{$\mathbf{U}$, solution matrix. }
+ Generate submatrix of $\textbf{B}$ for this node using the function $b(x,y)$\;
+ Generate the whole vector $\lambda$ \;
+ Let $\mathbf{\widetilde{X}} = \mathbf{SB}$  \;
+ Let $\mathbf{\widetilde{X}}^T = $parallel\_transpose($\mathbf{\widetilde{X}}$)   \;
+ Let $\mathbf{\widetilde{B}}^T = \mathbf{S}^{-1}(\mathbf{\widetilde{X}}^T)$ \;
+ Solve system (\ref{system2}): $\tilde{u}^T_{i,j} = \frac{\tilde{b}^T_{i,j}}{\lambda_i + \lambda_j} 1 \leq i, j \leq N$\;
+ Let $\mathbf{\widetilde{X}}^T = \mathbf{S}\mathbf{\tilde{U}}^T$  \;
+ Let $\mathbf{\widetilde{X}} = $parallel\_transpose($\mathbf{\widetilde{X}}^T$)   \;
+ Let $\mathbf{U} = \mathbf{S}^{-1}(\mathbf{\widetilde{X}}) $ \;
+ Gather the results from all nodes into the big $\mathbf{U}$.
+ \caption{Pseudocode for serial poisson solver using discrete sine transform.}
+ \label{code:parallel}
+\end{algorithm}
+
+with the parallel\_transpose function as follows.
+
+\begin{algorithm}[H]
+ \caption{Parallel\_transpose function. Notice that it returns a matrix of the same dimension as its input.}
+ \KwData{Matrix $\mathbf{X}$ with $n$ rows and $m \leq n$ columns.}
+ \KwResult{Matrix $\mathbf{Z}$ with $n$ rows and $m \leq n$ columns.}
+ Determine which elements in $\mathbf{X}$ should go which nodes and order linearly in memory \;
+ Spread out all elements to the correct nodes \;
+ Get new elements from other nodes \;
+ Order the elements correctly in memory according to a transpose operation and return as $\mathbf{Z}$.
+ \label{code:transpose}
+\end{algorithm}
+We split the load matrix column wise and notices that the parallel\_transpose function preserves the nice data structure on each node. We chose to implement the sending and receiving of data in the transpose function as an MPI_Alltoallv call after laying out the elements in a correct linear layout first. Unpacking the data after the MPI call is just using the same structure to get it back, only remembering that we need to transpose the data.
+
+Furthermore, the gathering of data into one big $\mathbf{U}$ is not really necessary. We could either use MPI\_IO to write to disk or we're not interested in the matrix at all (say you're interested in the error or the computation time) we can just return that instead. All in all, this should be a really effective parallelization of the serial code since we severely limit the amount of network operations we have to do (only two MPI_Alltoallv and one MPI_Gather if we need result).
+
