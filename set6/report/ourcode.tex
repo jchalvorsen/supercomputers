@@ -45,3 +45,4 @@ We split the load matrix column wise and notices that the parallel\_transpose fu
 
 Furthermore, the gathering of data into one big $\mathbf{U}$ is not really necessary. We could either use MPI\_IO to write to disk or we're not interested in the matrix at all (say you're interested in the error or the computation time) we can just return that instead. All in all, this should be a really effective parallelization of the serial code since we severely limit the amount of network operations we have to do (only two MPI_Alltoallv and one MPI_Gather if we need result).
 
+\subsection*{OpenMP parallelization}
