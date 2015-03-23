@@ -1,6 +1,9 @@
+To check convergence we run the poisson solver with the load function and exact solution given in equation (\ref{loadfunc2}). We run the \textit{wrapper\_n.sh} script on kongull to run the exact same configuration 11 times with only $n$ changing each iteration. We let $n$ vary from $2^4$ to $2^{14}$. We run the job with 3 openMP threads and 12 MPI processors. The program returns the maximum error over the whole domain. This is then imported to matlab and plotted on the logarithm scale in figure \ref{fig:checkConv}. For the given test data we have quadratic convergence as expected.
+
+
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.7\linewidth]{./figures/checkConv}
+\includegraphics[width=0.6\linewidth]{./figures/checkConv}
 \caption{Shows that the result from the convergence test compared with curves with slope $h$ and $h^2$}
 \label{fig:checkConv}
 \end{figure}
