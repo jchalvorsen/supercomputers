@@ -14,21 +14,21 @@ and
 f(x,y)&=5\pi^2\sin(2\pi x)\sin(\pi y) \quad\text{with exact solution} \\
 u(x,y)&=\sin(2\pi x)\sin(\pi y).\nonumber
 \end{align}
-We discretize the Laplace operator with the five-point stencil and use regular finite difference grid with $(n+1)$ points in each direction and use a local numbering scheme. This results in a SPD algebraic system
+We discretize the Laplace operator with the five-point stencil and use regular finite difference grid with $(n+1)$ points in each direction and, at first, a global numbering scheme. This results in a SPD algebraic system
 \begin{equation}
-	\mathbf{AU} = \mathbf{B}.
+	\mathbf{Au} = \mathbf{b}.
 	\label{system1}
 \end{equation}
-Since the matrix $\mathbf{A}$ resulted from applying the three point formula in $x$ and $y$, it is a tensor product operator. Thus \eqref{system1} can be stated as 
+Since the matrix $\mathbf{A}$ resulted from applying the three point formula in both the $x$ and $y$ directions, it is a tensor product operator. Thus, using a local numbering scheme, \eqref{system1} can be stated as 
 \begin{equation}
 	\mathbf{TU} + \mathbf{UT} = \mathbf{B}
 \end{equation}
-where $\mathbf{T}$ (skrive noe om T, begrunne at den er SPD...). Since $\mathbf{T}$ is SPD, we know we can perform an eigendecomposition $\mathbf{T} = \mathbf{Q\Lambda Q^T}$. Now, letting $\mathbf{\widetilde{B}} = \mathbf{Q^TBQ^T}$ and $\mathbf{\widetilde{U}} = \mathbf{Q^TUQ}$, we finally arrive at the system 
+where $\mathbf{T}$ is the matrix from the one dimensional Poisson problem. We know that $\mathbf{T}$ is SPD, thus we can perform an eigendecomposition $\mathbf{T} = \mathbf{Q\Lambda Q^T}$. Now, letting $\mathbf{\widetilde{B}} = \mathbf{Q^TBQ}$ and $\mathbf{\widetilde{U}} = \mathbf{Q^TUQ}$, we finally arrive at the system 
 \begin{equation}
 	\mathbf{\Lambda\widetilde{U}} + \mathbf{\widetilde{U}\Lambda} = \mathbf{\widetilde{B}}.
 	\label{system2}
 \end{equation}
-Finding $\mathbf{\widetilde{U}}$ from \eqref{system2} is a simple calculation when we know the eigenvalues of $\mathbf{T}$, and we can from this get the final answer $\mathbf{U}$. Now we utilize what we know about the Poisson problem to avoid the two matrix-matrix products needed to compute both $\mathbf{\widetilde{B}}$ and $\mathbf{U}$, which is done in $\mathcal{O}(N^3)$ time. \\
+Finding $\mathbf{\widetilde{U}}$ from \eqref{system2} is a simple calculation when we know the eigenvalues of $\mathbf{T}$, and we can from this get the final answer $\mathbf{U}$. Now we utilize what we know about the Poisson problem to avoid the two matrix-matrix products needed to compute both $\mathbf{\widetilde{B}}$ and $\mathbf{\widetilde{U}}$, which requires $\mathcal{O}(N^3)$ time. \\
 \\
 We utilize the fact that we know the eigenvalues $\lambda$ and eigenvectors $\mathbf{q}$ of $\mathbf{T}$, in particular the eigenvectors are 
 \begin{align*}
