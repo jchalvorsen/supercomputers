@@ -30,12 +30,17 @@ We know that $\mathbf{T}$ is SPD, thus we can perform an eigendecomposition $\ma
 \end{equation}
 Finding $\mathbf{\widetilde{U}}$ from \eqref{system2} is a simple calculation when we know the eigenvalues of $\mathbf{T}$, and we can from this get the final answer $\mathbf{U}$. Now we utilize what we know about the Poisson problem to avoid the two matrix-matrix products needed to compute both $\mathbf{\widetilde{B}}$ and $\mathbf{\widetilde{U}}$, which requires $\mathcal{O}(N^3)$ time. \\
 \\
-We utilize the fact that we know the eigenvalues $\lambda$ and eigenvectors $\mathbf{q}$ of $\mathbf{T}$, in particular the eigenvectors are 
+We utilize the fact that we know the eigenvalues $\lambda$ and eigenvectors $\mathbf{q}$ of $\mathbf{T}$, in particular the eigenvectors and the eigenvalues are
 \begin{align*}
-	(\mathbf{q}_j)_i &= \sqrt{\dfrac{2}{N}}\sin \Big( \dfrac{ij\pi}{N}\Big).
+	(q_j)_i &= \sqrt{\dfrac{2}{N}}\sin \Big( \dfrac{ij\pi}{N}\Big) \\
+	\lambda_i &= 2\left(1-\cos\left(\frac{i \pi}{N}\right) \right),
 \end{align*}
-Notice that these (if normalized) are the same as the basis for the discrete sine transform (Kanskje en referanse her?). Thus, we can use the DST to find $\mathbf{\widetilde{B}}$ and $\mathbf{U}$. Let $\mathbf{S}$ denote the discrete sine transform, and $\mathbf{S}^{-1}$ be the inverse transform. We can now express $\mathbf{Q} = \sqrt{\frac{N}{2}\mathbf{S}}$ and $\mathbf{Q}^T = \sqrt{\frac{2}{N}}\mathbf{S}^{-1}$, and therefore $\mathbf{\widetilde{B}}^T = \mathbf{S}^{-1}((\mathbf{SB})^T)$ and $\mathbf{U} = \mathbf{S}^{-1}(\mathbf{S}(\mathbf{\widetilde{U}}^T))^T$. Both of these operations can be done in $\mathcal{O}((N^2\log{N})$ time. 
+which lead to the following solution to system (\ref{system2}):
+\begin{align*}
+\tilde{u}^T_{i,j} &= \frac{\tilde{b}^T_{i,j}}{\lambda_i + \lambda_j}, 1 \leq i, j \leq N
+\end{align*}
 
+Notice that these eigenvectors (if normalized) are the same as the basis for the discrete sine transform, given in the lecture slides. \cite{forelesning} Thus, we can use the DST to find $\mathbf{\widetilde{B}}$ and $\mathbf{U}$. Let $\mathbf{S}$ denote the discrete sine transform, and $\mathbf{S}^{-1}$ be the inverse transform. We can now express $\mathbf{Q} = \sqrt{\frac{N}{2}\mathbf{S}}$ and $\mathbf{Q}^T = \sqrt{\frac{2}{N}}\mathbf{S}^{-1}$, and therefore $\mathbf{\widetilde{B}}^T = \mathbf{S}^{-1}((\mathbf{SB})^T)$ and $\mathbf{U} = \mathbf{S}^{-1}(\mathbf{S}(\mathbf{\widetilde{U}}^T))^T$. Both of these operations can be done in $\mathcal{O}((N^2\log{N})$ time. 
 This leads us to the following serial code:\\
 
 \begin{algorithm}[H]
@@ -43,7 +48,7 @@ This leads us to the following serial code:\\
  \KwData{$\mathbf{S}$ the discrete fourier transform operator.}
  \KwResult{$\mathbf{U}$, solution matrix. }
  Calculate $\mathbf{\widetilde{B}}^T = \mathbf{S}^{-1}((\mathbf{SB})^T)$  \;
- Solve system (\ref{system2}): $\tilde{u}^T_{i,j} = \frac{\tilde{b}^T_{i,j}}{\lambda_i + \lambda_j} 1 \leq i, j \leq N$\;
+ Solve system (\ref{system2}): $\tilde{u}^T_{i,j} = \frac{\tilde{b}^T_{i,j}}{\lambda_i + \lambda_j}, 1 \leq i, j \leq N$\;
  Calculate $\mathbf{U} = \mathbf{S}^{-1}((\mathbf{S}\mathbf{\tilde{U}}^T)^T)$ \;
  \caption{Pseudocode for serial poisson solver using discrete sine transform.}
  \label{code:serial}
