@@ -5,7 +5,7 @@ Exercises to be delivered in the supercomputing course at NTNU
 
 - [ ] Write abstract.
 - [ ] Write intro
-- [ ] Finish the theory part
+- [x] Finish the theory part
 - [ ] Discuss possible solution paths and explain why we chose to go for this one
 - [ ] Describe kongull cluster
 - [x] Describe MPI parallelization
