@@ -25,7 +25,7 @@ legend(string2, 'quadratic scaling','linear scaling');
 
 figure
 Tt = sortrows(readtable('varyt.txt'))
-plot(Tt{:,2},Tt{:,5})
+plot(Tt{:,2},Tt{:,5}, '*-')
 n = Tt{1,1};
 xlabel('Number of processors')
 ylabel('Runtime in seconds')
