@@ -12,7 +12,7 @@ Exercises to be delivered in the supercomputing course at NTNU
 - [ ] Describe OMP parallelization
 - [ ] Discuss possible bottlenecks
 - [x] Convergence analysis
-- [ ] Discuss changes needed to be done to pick a different loading function
+- [x] Discuss changes needed to be done to pick a different loading function
 - [ ] Present results
 - [x] Discuss the case of non-homogeneous Dirichlet boundary conditions
 - [x] Discuss moving away from the unit square
