@@ -14,12 +14,12 @@ and
 f(x,y)&=5\pi^2\sin(2\pi x)\sin(\pi y) \quad\text{with exact solution} \\
 u(x,y)&=\sin(2\pi x)\sin(\pi y).\nonumber
 \end{align}
-We discretize the Laplace operator with the five-point stencil and use regular finite difference grid with $(n+1)$ points in each direction and, at first, a global numbering scheme. This results in a SPD algebraic system
+We discretize the Laplace operator with the five-point stencil and use regular finite difference grid with $(n+1)$ points, and therefore $h = \frac{1}{n}$ spacing, in each direction and, at first, a global numbering scheme. This results in a SPD algebraic system
 \begin{equation}
-	\mathbf{Au} = \mathbf{b}.
+	\mathbf{Au} = \mathbf{b}
 	\label{system1}
 \end{equation}
-$\mathbf{A}$ is a tensor product operator $\mathbf{A} = \mathbf{T}\bigoplus\mathbf{I} + \mathbf{I}\bigoplus\mathbf{T}$ where $\mathbf{T}$ is the matrix from the one dimensional Poisson problem. Thus, using a local numbering scheme, \eqref{system1} can be stated as 
+where $\mathbf{b}$ is found from the loading function times the term $h^2$. $\mathbf{A}$ is a tensor product operator $\mathbf{A} = \mathbf{I}\bigotimes\mathbf{T} + \mathbf{T}\bigotimes\mathbf{I}$ where $\mathbf{T}$ is the matrix from the one dimensional Poisson problem. Thus, using a local numbering scheme, \eqref{system1} can be stated as 
 \begin{equation}
 	\mathbf{TU} + \mathbf{UT} = \mathbf{B}
 \end{equation}
