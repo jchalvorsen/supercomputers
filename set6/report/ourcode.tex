@@ -7,9 +7,7 @@ Inspection of the code in algorithm \ref{code:serial} reveals the following tric
 \item The whole $\lambda$ vector is needed in each node given that we split $\textbf{B}$ column or row wise.
 \item Given the above two points, the only time we need to exchange data from node to node is in the transpose function (and when we gather the results).
 \end{itemize}
-
-The new pseudocode for our parallel code then becomes:
-
+The new pseudocode for our parallel code then becomes:\\
 \begin{algorithm}[H]
  \KwData{$b(x,y)$ The load function.}
  \KwData{$\mathbf{\widetilde{X}}$, buffer to store intermediate results.}
@@ -28,9 +26,7 @@ The new pseudocode for our parallel code then becomes:
  \caption{Pseudocode for serial poisson solver using discrete sine transform.}
  \label{code:parallel}
 \end{algorithm}
-
-with the parallel\_transpose function as follows.
-
+\noindent with the parallel\_transpose function as follows.\\
 \begin{algorithm}[H]
  \caption{Parallel\_transpose function. Notice that it returns a matrix of the same dimension as its input.}
  \KwData{Matrix $\mathbf{X}$ with $n$ rows and $m \leq n$ columns.}
@@ -41,9 +37,9 @@ with the parallel\_transpose function as follows.
  Order the elements correctly in memory according to a transpose operation and return as $\mathbf{Z}$.
  \label{code:transpose}
 \end{algorithm}
-We split the load matrix column wise and notices that the parallel\_transpose function preserves the nice data structure on each node. We chose to implement the sending and receiving of data in the transpose function as an MPI\_Alltoallv call after laying out the elements in a correct linear layout first. Unpacking the data after the MPI call is just using the same structure to get it back, only remembering that we need to transpose the data.
-
+\noindent We split the load matrix column wise and notices that the parallel\_transpose function preserves the nice data structure on each node. We chose to implement the sending and receiving of data in the transpose function as an MPI\_Alltoallv call after laying out the elements in a correct linear layout first. Unpacking the data after the MPI call is just using the same structure to get it back, only remembering that we need to transpose the data.
+\\ \\
 Furthermore, the gathering of data into one big $\mathbf{U}$ is not really necessary. We could either use MPI\_IO to write to disk or we're not interested in the matrix at all (say you're interested in the error or the computation time) we can just return that instead. All in all, this should be a really effective parallelization of the serial code since we severely limit the amount of network operations we have to do (only two MPI\_Alltoallv and one MPI\_Gather if we need result).
 
 \subsection*{OpenMP parallelization}
-The openMP parallelization was done by putting openMP pragmas at the computer intensive loops. A typical pragma could be "\#pragma omp parallel" and making sure to make any needed variables private or shared. Especially on the operations where we need temporary buffers we must make sure that the different threads use different buffers or we are in deep shit. SKRIVE NOE MER??
+The openMP parallelization was done by putting openMP pragmas at the computer intensive loops. A typical pragma could be "\#pragma omp parallel" and making sure to make any needed variables private or shared. Especially on the operations where we need temporary buffers we must make sure that the different threads use different buffers or we are in deep shit. We choose to use openMP in almost all places where we have loops. So where we generate $\mathbf{B}$ and $\lambda$, calculates $\mathbf{SB}$ or $\mathbf{SX}$ in any form, both times we transpose $\mathbf{\widetilde{X}}$ and when we calculate $\widetilde{u}$. The only place we don't use openMP where we have a loop is where we calculate the max error. We don't use it here because  to calculate the max error we need to know the results of the earlier calculations in the loop.

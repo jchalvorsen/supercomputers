@@ -14,12 +14,12 @@ and
 f(x,y)&=5\pi^2\sin(2\pi x)\sin(\pi y) \quad\text{with exact solution} \\
 u(x,y)&=\sin(2\pi x)\sin(\pi y).\nonumber
 \end{align}
-We discretize the Laplace operator with the five-point stencil and use regular finite difference grid with $(n+1)$ points, and therefore $h = \frac{1}{n}$ spacing, in each direction and, at first, a global numbering scheme. This results in a SPD algebraic system
+We discretize the Laplace operator with the five-point stencil and use regular finite difference grid with $(n+1)$ points, and therefore $h = \frac{1}{n}$ spacing, in each direction and, at first, a global numbering scheme. For simplicity, define $N = n-1$. This results in a SPD algebraic system
 \begin{equation}
 	\mathbf{Au} = \mathbf{b}
 	\label{system1}
 \end{equation}
-where $\mathbf{b}$ is found from the loading function times the term $h^2$. $\mathbf{A}$ is a tensor product operator $\mathbf{A} = \mathbf{I}\bigotimes\mathbf{T} + \mathbf{T}\bigotimes\mathbf{I}$ where $\mathbf{T}$ is the matrix from the one dimensional Poisson problem. Thus, using a local numbering scheme, \eqref{system1} can be stated as 
+where $\mathbf{b}$ is found from the loading function times the term $h^2$. $\mathbf{A}$ is a tensor product operator $\mathbf{A} = \mathbf{I}\otimes\mathbf{T} + \mathbf{T}\otimes\mathbf{I}$ where $\mathbf{T}$ is the matrix from the one dimensional Poisson problem. Thus, using a local numbering scheme, \eqref{system1} can be stated as 
 \begin{equation}
 	\mathbf{TU} + \mathbf{UT} = \mathbf{B}
 \end{equation}
@@ -32,15 +32,15 @@ Finding $\mathbf{\widetilde{U}}$ from \eqref{system2} is a simple calculation wh
 \\
 We utilize the fact that we know the eigenvalues $\lambda$ and eigenvectors $\mathbf{q}$ of $\mathbf{T}$, in particular the eigenvectors and the eigenvalues are
 \begin{align*}
-	(q_j)_i &= \sqrt{\dfrac{2}{N}}\sin \Big( \dfrac{ij\pi}{N}\Big) \\
-	\lambda_i &= 2\left(1-\cos\left(\frac{i \pi}{N}\right) \right),
+	(q_j)_i &= \sqrt{\dfrac{2}{N}}\sin \Big( \dfrac{ij\pi}{n}\Big) \\
+	\lambda_i &= 2\left(1-\cos\left(\frac{i \pi}{n}\right) \right),
 \end{align*}
 which lead to the following solution to system (\ref{system2}):
 \begin{align*}
 \tilde{u}^T_{i,j} &= \frac{\tilde{b}^T_{i,j}}{\lambda_i + \lambda_j}, 1 \leq i, j \leq N
 \end{align*}
-
-Notice that these eigenvectors (if normalized) are the same as the basis for the discrete sine transform, given in the lecture slides. \cite{forelesning} Thus, we can use the DST to find $\mathbf{\widetilde{B}}$ and $\mathbf{U}$. Let $\mathbf{S}$ denote the discrete sine transform, and $\mathbf{S}^{-1}$ be the inverse transform. We can now express $\mathbf{Q} = \sqrt{\frac{N}{2}\mathbf{S}}$ and $\mathbf{Q}^T = \sqrt{\frac{2}{N}}\mathbf{S}^{-1}$, and therefore $\mathbf{\widetilde{B}}^T = \mathbf{S}^{-1}((\mathbf{SB})^T)$ and $\mathbf{U} = \mathbf{S}^{-1}(\mathbf{S}(\mathbf{\widetilde{U}}^T))^T$. Both of these operations can be done in $\mathcal{O}((N^2\log{N})$ time. 
+\\ \\
+Notice that these eigenvectors (if normalized) are the same as the basis for the discrete sine transform, given in the lecture slides. \cite{forelesning} Thus, we can use the DST to find $\mathbf{\widetilde{B}}$ and $\mathbf{U}$. Let $\mathbf{S}$ denote the discrete sine transform, and $\mathbf{S}^{-1}$ be the inverse transform. We can now express $\mathbf{Q} = \sqrt{\frac{N}{2}}\mathbf{S}$ and $\mathbf{Q}^T = \sqrt{\frac{2}{N}}\mathbf{S}^{-1}$, and therefore $\mathbf{\widetilde{B}}^T = \mathbf{S}^{-1}((\mathbf{SB})^T)$ and $\mathbf{U} = \mathbf{S}^{-1}(\mathbf{S}(\mathbf{\widetilde{U}}^T))^T$. Both of these operations can be done in $\mathcal{O}(N^2\log{N})$ time. 
 This leads us to the following serial code:\\
 
 \begin{algorithm}[H]
