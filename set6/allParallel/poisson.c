@@ -223,15 +223,16 @@ void transpose(Real **b, int *numberOfCols, int *startCol, Real *sendbuffer, Rea
     // Transpose the matrix b in place over MPI
 
     // Lay out all elements in right memory order
-    int count = 0;
+    //int count = 0;
     int p, i , j, rank, size;
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     for (p = 0; p < size; ++p){
+        #pragma omp parallel for private(j)
         for (i = 0; i < numberOfCols[rank]; ++i){
             for (j = 0; j < numberOfCols[p]; ++j){
-                sendbuffer[count] = b[i][j + startCol[p]];
-                count += 1;
+                sendbuffer[p*numberOfCols[rank]*numberOfCols[p] + i*numberOfCols[p]+j] = b[i][j + startCol[p]];
+                //count += 1;
             }
         }
     }
@@ -245,12 +246,13 @@ void transpose(Real **b, int *numberOfCols, int *startCol, Real *sendbuffer, Rea
     MPI_Alltoallv(sendbuffer, srcounts, srdispls, MPI_DOUBLE, rbuffer, srcounts, srdispls, MPI_DOUBLE, MPI_COMM_WORLD);
 
     // Taking the data back to b
-    count = 0;
+    //count = 0;
     for (p = 0; p < size; ++p){
+        #pragma omp parallel for private(j)
         for (i = 0; i < numberOfCols[p]; ++i){
             for (j = 0; j < numberOfCols[rank]; ++j){
-                b[j][i + startCol[p]] = rbuffer[count];
-                count += 1;
+                b[j][i + startCol[p]] = rbuffer[p*numberOfCols[rank]*numberOfCols[p] + i*numberOfCols[p]+j];
+                //count += 1;
             }
         }
     }
