@@ -9,7 +9,7 @@ Exercises to be delivered in the supercomputing course at NTNU
 - [ ] Discuss possible solution paths and explain why we chose to go for this one
 - [x] Describe kongull cluster
 - [x] Describe MPI parallelization
-- [ ] Describe OMP parallelization
+- [x] Describe OMP parallelization
 - [ ] Discuss possible bottlenecks
 - [x] Convergence analysis
 - [x] Discuss changes needed to be done to pick a different loading function
