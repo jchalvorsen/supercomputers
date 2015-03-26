@@ -228,7 +228,7 @@ void transpose(Real **b, int *numberOfCols, int *startCol, Real *sendbuffer, Rea
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     for (p = 0; p < size; ++p){
-        //#pragma omp parallel for private(j) shared(sendbuffer)
+        #pragma omp parallel for private(j) shared(sendbuffer)
         for (i = 0; i < numberOfCols[rank]; ++i){
             for (j = 0; j < numberOfCols[p]; ++j){
                 count = numberOfCols[rank]*startCol[p] + i*numberOfCols[p]+j;
@@ -248,7 +248,7 @@ void transpose(Real **b, int *numberOfCols, int *startCol, Real *sendbuffer, Rea
     // Taking the data back to b
     count = 0;
     for (p = 0; p < size; ++p){
-        //#pragma omp parallel for private(j) shared(b)
+        #pragma omp parallel for private(j) shared(b)
         for (i = 0; i < numberOfCols[p]; ++i){
             for (j = 0; j < numberOfCols[rank]; ++j){
                 count = numberOfCols[rank]*startCol[p] + i*numberOfCols[rank]+j;
