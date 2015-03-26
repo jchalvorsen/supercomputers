@@ -4,7 +4,7 @@ Exercises to be delivered in the supercomputing course at NTNU
 ### TODO on report 2
 
 - [ ] ~~Write abstract.~~
-- [ ] Write intro
+- [x] Write intro
 - [x] Finish the theory part
 - [ ] Discuss possible solution paths and explain why we chose to go for this one
 - [x] Describe kongull cluster
