@@ -1,6 +1,6 @@
 When going from the simple case of the loading function being identically $1$, to it being a different function we need to evaluate the function in the point corresponding to the element we are in. For the whole matrix, the assignment is done by
 \begin{align*}
-	(B)_{i,j} = h^2\cdot f\Big(\frac{i}{n},\frac{j}{n}\Big) \quad \text{for } i,j = 1,...,n-1.
+	(B)_{i,j} = h^2\cdot f\Big(\frac{i}{n},\frac{j}{n}\Big) \quad \text{for } i,j = 1,...,N.
 \end{align*}
 In the parallel code, it is important to make sure that each node is able to map its elements to the correct corresponding points on the grid when evaluation the function $f$. This is done by using what we know about which, and how many, columns each node has.
 \\
@@ -10,11 +10,11 @@ So far, we have only considered homogenous Dirichlet boundary conditions. In the
 We could have implemented the boundary condition in this way: each node gets the boundary value information, and apply the boundary conditions of the rows. Since it is known how many nodes the program uses, we can tell the first and the last node separately to apply the boundary conditions for the columns(for the first node it applies the boundary condition in the first column and the last node applies the boundary conditions in the last column).
 \\
 \\
-We have also assumed that the domain is the unit square. If this was not the case, but we instead had had a rectangle with sides $L_x$ and $L_y$, i.e. $ \Omega = (0,L_x)\times (0,L_y)$, but still a regular finite grid with $(n+1)$ points in each spatial direction, we would have to use different values for the spacing in each direction, 
+We have also assumed that the domain is the unit square. If this was not the case, but we instead had had a rectangle with sides $L_x$ and $L_y$, i.e. $ \Omega = (0,L_x)\times (0,L_y)$, but still a regular finite grid with $(n+1)$ points in each spatial direction, we would have to use different values for the spacing, 
 \begin{align*}
 	h_x = \frac{L_x}{n} \quad \text{and} \quad h_y = \frac{L_y}{n}.
 \end{align*}
-In terms of the implementation, a few changes would have to be made. Because we still use a regular finite grid, $\mathbf{A}$ and $\mathbf{B}$ would still be $(n-1)\times (n-1)$ matrices, but now we cannot multiply the loading function with $h^2$ when creating the load matrix $\mathbf{B}$. The system \eqref{system2} would change to 
+In terms of the implementation, a few changes would have to be made. Because we still use a regular finite grid, $\mathbf{A}$ and $\mathbf{B}$ would still be $N\times N$ matrices, but now we cannot multiply the loading function with $h^2$ when creating the load matrix $\mathbf{B}$. The system \eqref{system2} would change to 
 \begin{align*}
 	\frac{1}{h_x^2}\mathbf{\Lambda\widetilde{U}} + \frac{1}{h_y^2}\mathbf{\widetilde{U}\Lambda} = \mathbf{\widetilde{B}}.
 \end{align*}
