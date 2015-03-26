@@ -39,8 +39,8 @@ which lead to the following solution to system (\ref{system2}):
 \begin{align*}
 \tilde{u}^T_{i,j} &= \frac{\tilde{b}^T_{i,j}}{\lambda_i + \lambda_j}, 1 \leq i, j \leq N
 \end{align*}
-
-Notice that these eigenvectors (if normalized) are the same as the basis for the discrete sine transform, given in the lecture slides. \cite{forelesning} Thus, we can use the DST to find $\mathbf{\widetilde{B}}$ and $\mathbf{U}$. Let $\mathbf{S}$ denote the discrete sine transform, and $\mathbf{S}^{-1}$ be the inverse transform. We can now express $\mathbf{Q} = \sqrt{\frac{N}{2}\mathbf{S}}$ and $\mathbf{Q}^T = \sqrt{\frac{2}{N}}\mathbf{S}^{-1}$, and therefore $\mathbf{\widetilde{B}}^T = \mathbf{S}^{-1}((\mathbf{SB})^T)$ and $\mathbf{U} = \mathbf{S}^{-1}(\mathbf{S}(\mathbf{\widetilde{U}}^T))^T$. Both of these operations can be done in $\mathcal{O}((N^2\log{N})$ time. 
+\\ \\
+Notice that these eigenvectors (if normalized) are the same as the basis for the discrete sine transform, given in the lecture slides. \cite{forelesning} Thus, we can use the DST to find $\mathbf{\widetilde{B}}$ and $\mathbf{U}$. Let $\mathbf{S}$ denote the discrete sine transform, and $\mathbf{S}^{-1}$ be the inverse transform. We can now express $\mathbf{Q} = \sqrt{\frac{N}{2}\mathbf{S}}$ and $\mathbf{Q}^T = \sqrt{\frac{2}{N}}\mathbf{S}^{-1}$, and therefore $\mathbf{\widetilde{B}}^T = \mathbf{S}^{-1}((\mathbf{SB})^T)$ and $\mathbf{U} = \mathbf{S}^{-1}(\mathbf{S}(\mathbf{\widetilde{U}}^T))^T$. Both of these operations can be done in $\mathcal{O}(N^2\log{N})$ time. 
 This leads us to the following serial code:\\
 
 \begin{algorithm}[H]
