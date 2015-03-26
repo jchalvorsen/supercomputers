@@ -19,11 +19,11 @@ We discretize the Laplace operator with the five-point stencil and use regular f
 	\mathbf{Au} = \mathbf{b}.
 	\label{system1}
 \end{equation}
-Since the matrix $\mathbf{A}$ resulted from applying the three point formula in both the $x$ and $y$ directions, it is a tensor product operator. Thus, using a local numbering scheme, \eqref{system1} can be stated as 
+$\mathbf{A}$ is a tensor product operator $\mathbf{A} = \mathbf{T}\bigoplus\mathbf{I} + \mathbf{I}\bigoplus\mathbf{T}$ where $\mathbf{T}$ is the matrix from the one dimensional Poisson problem. Thus, using a local numbering scheme, \eqref{system1} can be stated as 
 \begin{equation}
 	\mathbf{TU} + \mathbf{UT} = \mathbf{B}
 \end{equation}
-where $\mathbf{T}$ is the matrix from the one dimensional Poisson problem. We know that $\mathbf{T}$ is SPD, thus we can perform an eigendecomposition $\mathbf{T} = \mathbf{Q\Lambda Q^T}$. Now, letting $\mathbf{\widetilde{B}} = \mathbf{Q^TBQ}$ and $\mathbf{\widetilde{U}} = \mathbf{Q^TUQ}$, we finally arrive at the system 
+We know that $\mathbf{T}$ is SPD, thus we can perform an eigendecomposition $\mathbf{T} = \mathbf{Q\Lambda Q^T}$. Now, letting $\mathbf{\widetilde{B}} = \mathbf{Q^TBQ}$ and $\mathbf{\widetilde{U}} = \mathbf{Q^TUQ}$, we finally arrive at the system 
 \begin{equation}
 	\mathbf{\Lambda\widetilde{U}} + \mathbf{\widetilde{U}\Lambda} = \mathbf{\widetilde{B}}.
 	\label{system2}
