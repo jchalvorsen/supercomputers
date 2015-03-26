@@ -14,5 +14,5 @@ Exercises to be delivered in the supercomputing course at NTNU
 - [x] Convergence analysis
 - [ ] Discuss changes needed to be done to pick a different loading function
 - [ ] Present results
-- [ ] Discuss the case of non-homogeneous Dirichlet boundary conditions
-- [ ] Discuss moving away from the unit square
+- [x] Discuss the case of non-homogeneous Dirichlet boundary conditions
+- [x] Discuss moving away from the unit square
