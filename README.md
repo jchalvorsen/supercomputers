@@ -13,6 +13,6 @@ Exercises to be delivered in the supercomputing course at NTNU
 - [ ] Discuss possible bottlenecks
 - [x] Convergence analysis
 - [x] Discuss changes needed to be done to pick a different loading function
-- [ ] Present results
+- [x] Present results
 - [x] Discuss the case of non-homogeneous Dirichlet boundary conditions
 - [x] Discuss moving away from the unit square

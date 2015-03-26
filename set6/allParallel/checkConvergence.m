@@ -27,7 +27,7 @@ figure
 Tt = sortrows(readtable('varyt.txt'))
 plot(Tt{:,2},Tt{:,5}, '*-')
 n = Tt{1,1};
-xlabel('Number of processors')
+xlabel('Number of MPI processors')
 ylabel('Runtime in seconds')
 string = sprintf('Runtime for n = %d \n with p*t = 36', n);
 saveas(gcf,'../report/figures/runtime.png')
