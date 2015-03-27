@@ -1,9 +1,8 @@
 In this project we are studying the two-dimensional Poisson problem
-\begin{align}\\
-\label{Poisson}
+\begin{align*}
 -\nabla^2u&=f \quad\quad\text{ in } \Omega=(0,1)\times(0,1)\\
 u&=0 \quad\quad\text{ on } \partial \Omega, \nonumber
-\end{align}
+\end{align*}
 where $f$ is a given load function and $u$ is the solution. We have been using two different load functions
 \begin{align*}
 f(x,y)&=1
@@ -20,9 +19,9 @@ We discretize the Laplace operator with the five-point stencil and use regular f
 	\label{system1}
 \end{equation}
 where $\mathbf{b}$ is found from the loading function times the term $h^2$. $\mathbf{A}$ is a tensor product operator $\mathbf{A} = \mathbf{I}\otimes\mathbf{T} + \mathbf{T}\otimes\mathbf{I}$ where $\mathbf{T}$ is the matrix resulting from applying the three point stencil to the one dimensional Poisson problem. Thus, using a local numbering scheme, \eqref{system1} can be stated as 
-\begin{equation}
+\begin{equation*}
 	\mathbf{TU} + \mathbf{UT} = \mathbf{B}
-\end{equation}
+\end{equation*}
 We know that $\mathbf{T}$ is SPD, thus we can perform an eigendecomposition $\mathbf{T} = \mathbf{Q\Lambda Q^T}$. Now, letting $\mathbf{\widetilde{B}} = \mathbf{Q^TBQ}$ and $\mathbf{\widetilde{U}} = \mathbf{Q^TUQ}$, we finally arrive at the system 
 \begin{equation}
 	\mathbf{\Lambda\widetilde{U}} + \mathbf{\widetilde{U}\Lambda} = \mathbf{\widetilde{B}}.
