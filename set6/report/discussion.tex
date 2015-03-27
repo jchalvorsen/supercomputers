@@ -30,6 +30,13 @@ In total, the only things that would have to change in the implementation of the
 \subsection*{Possible bottlenecks}
 Since we decide to split the matrix column wise and we have $2^k-1$ columns we'll (almost( never get a load balanced program. This way some processors must process $2k^-1$ more numbers than the others. It could be possible to split this in another way such that the processors share the load better. The computational difficulty of achieving this is however pretty big, but it probably could be done.
 
-An obvious bottleneck is the bandwidth between the nodes in the system (as evidenced in figure \ref{fig:bestnodes}). Here we could have done some more testing. No matter the results of this, we think ordinary decency says that you should use all the computing power in the node you get access to and not to use any excess nodes because of a small performance boost.
+An obvious bottleneck is the bandwidth between the nodes in the system (as evidenced in figure \ref{fig:bestnodes}). Here we could have done some more testing. No matter the results of this, we think ordinary decency says that you should use all the computing power in the node you get access to and not to use any excess nodes because of a small performance boost. This bottleneck inspired us to do some more testing and the result is shown in figure \ref{fig:varynodes}.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\textwidth]{./figures/varynodes}
+\caption{Running the problem on a different amount of nodes with the combined number of processors to be 36 and each MPI core running on its own node ($n=p$).}
+\label{fig:varynodes}
+\end{figure}
+As we can see we get a speedup when distributing the work over more nodes when $p\cdot t=36$. The best result here is also better than what we have already. We still feel like this is kind of like cheating, since we use so many nodes (without using them fully). It is however very effective and because of this we realize that the bandwidth is possible the most limiting bottleneck here.
 
 If the resulting matrix should be stored, MPI-I/O could be used to store the matrix, but in our case we were only interested in whether or not it converged, so no need to store the data.
