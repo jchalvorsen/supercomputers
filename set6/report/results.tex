@@ -1,8 +1,8 @@
 \subsection*{Running only MPI or openMP}
-\begin{figure}[h!]
+\begin{figure}[h]
 			\centering
 			\includegraphics[width=0.7\textwidth]{./figures/runtime_either_MPI_OMP}
-			\caption{Runtime for MPI and OMP program.}
+			\caption{Runtime for MPI and OMP program on a single node.}
 			\label{fig:MPIvsOMP}
 \end{figure}
 We first run our code both as a pure MPI and as a pure OpenMP program on one node to look at runtime. From figure \ref{fig:MPIvsOMP} we see that the runtime is equal for $t = p = 1$, as it obviously should be since this is the serial implementation. Then, the runtime decreases as $p$ and $t$ increases, as it should. In other words, we get a good speedup for both parallelization methods given that we are at one node. 
@@ -35,7 +35,7 @@ As seen in figure \ref{fig:runtime} the pure distributed model outclasses the hy
 The speedup, $S_P$ is is defined as the ratio between the solution time on one single processor divided by the solution time on $P$ processors, $S_p=\frac{T_1}{T_P}$. Ideally $S_P$ should be $S_P=T_1P$. When we study figure \ref{fig:speedup}, that is the plot of the speedup of our code, we see that in the beginning this happens, but with more that with more processors the speedup still increases, but not as much.
 \\ \\
 The speedup increases because the all computational tasks are spread to all the processors so the computing task for each processor is reduced. When the problem increases and the number of processors increases the communication between the processors increases. At one point the time used to communicate increases so much that it reduces the run time the speedup. We have not yet encountered this, but we assume it'll come soon if we continue to increase the problem size.
-
+\\ \\
 \begin{figure}[h]
         \centering
         \begin{subfigure}[b]{0.45\textwidth}
@@ -53,12 +53,11 @@ The speedup increases because the all computational tasks are spread to all the 
         \caption{Parallel speedup and efficiency for the pure distributed memory model. We assigned 6 nodes to tackle this problem.}
         \label{fig:analysis}
 \end{figure}
-
 As can be seen in figure \ref{fig:efficiacy} the parallel efficiency, defined as $\eta_P=\frac{S_P}{p}$, is almost ideal as long we only use a single node with 12 processors. With more than 12 processors the efficiency drops, but the speedup still makes it worth it. We assume this happens because the network overhead of using more than one node inhibits the efficiency more than the overhead of transporting things inside the node itself. According to the linear model of data transfer latency we would say that the latency (the constant) is larger when communicating between nodes than when we communicate in-node.
 
 
 \subsection*{How does runtime scale with N}
-\begin{figure}[h!]
+\begin{figure}[h]
 			\centering
 			\includegraphics[width=0.7\textwidth]{./figures/runtimeN}
 			\caption{Runtime with increasing problem size.}
