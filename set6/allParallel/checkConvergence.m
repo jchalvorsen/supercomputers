@@ -90,3 +90,14 @@ xlabel('Problem size N')
 string2 = sprintf('Runtime with p = %d and t = %d', Tn{1,2}, Tn{1,3});
 legend(string2, 'N^2*log(N)')%, 'quadratic scaling','linear scaling');
 saveas(gcf,'../report/figures/runtimeN.png')
+
+%% vary number of nodes
+figure
+Tnn = sortrows(readtable('varynodes.txt'))
+plot(Tnn{:,2},Tnn{:,5}, '*-')
+n = Tnn{1,1};
+xlabel('Number of Nodes')
+ylabel('Runtime in seconds')
+string = sprintf('Runtime for N = %d \n with p*t = 36', n);
+legend(string)
+saveas(gcf,'../report/figures/varynodes.png')
