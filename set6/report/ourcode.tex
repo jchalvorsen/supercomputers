@@ -21,7 +21,7 @@ The new pseudocode for our parallel code then becomes:\\
  Let $\mathbf{\widetilde{X}}^T = $parallel\_transpose($\mathbf{\widetilde{X}}$)   \;
  Let $\mathbf{\widetilde{B}}^T = \mathbf{S}^{-1}(\mathbf{\widetilde{X}}^T)$ \;
  Solve system (\ref{system2}): $\tilde{u}^T_{i,j} = \frac{\tilde{b}^T_{i,j}}{\lambda_i + \lambda_j} 1 \leq i, j \leq N-1$\;
- Let $\mathbf{\widetilde{X}}^T = \mathbf{S}\mathbf{\tilde{U}}^T$  \;
+ Let $\mathbf{\widetilde{X}}^T = \mathbf{S}(\mathbf{\tilde{U}}^T)$  \;
  Let $\mathbf{\widetilde{X}} = $parallel\_transpose($\mathbf{\widetilde{X}}^T$)   \;
  Let $\mathbf{U} = \mathbf{S}^{-1}(\mathbf{\widetilde{X}}) $ \;
  Gather the results from all MPI processors into the big $\mathbf{U}$.
