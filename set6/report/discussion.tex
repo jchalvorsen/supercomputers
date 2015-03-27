@@ -12,9 +12,9 @@ We could have implemented the boundary condition in this way: each node gets the
 \\
 We have also assumed that the domain is the unit square. If this was not the case, but we instead had had a rectangle with sides $L_x$ and $L_y$, i.e. $ \Omega = (0,L_x)\times (0,L_y)$, but still a regular finite grid with $(N+1)$ points in each spatial direction, we would have to use different values for the spacing, 
 \begin{align*}
-	h_x = \frac{L_x}{N} \quad \text{and} \quad h_y = \frac{L_y}{n}.
+	h_x = \frac{L_x}{N} \quad \text{and} \quad h_y = \frac{L_y}{N}.
 \end{align*}
-In terms of the implementation, a few changes would have to be made. Because we still use a regular finite grid, $\mathbf{A}$ and $\mathbf{B}$ would still be $(N-1)\times (N-1)$ matrices, but now we cannot multiply the loading function with $h^2$ when creating the load matrix $\mathbf{B}$. The system \eqref{system2} would change to 
+In terms of the implementation, a few changes would have to be made. Because we still use a regular finite grid, $\mathbf{T}$ and $\mathbf{B}$ would still be $(N-1)\times (N-1)$ matrices, but now we cannot multiply the loading function with $h^2$ when creating the load matrix $\mathbf{B}$. The system \eqref{system2} would change to 
 \begin{align*}
 	\frac{1}{h_x^2}\mathbf{\Lambda\widetilde{U}} + \frac{1}{h_y^2}\mathbf{\widetilde{U}\Lambda} = \mathbf{\widetilde{B}}.
 \end{align*}
