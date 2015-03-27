@@ -1,3 +1,10 @@
+
+\subsection*{Running only MPI or openMP}
+
+
+
+\subsection*{How many nodes is best}
+
 \subsection*{Hybrid vs pure distributed memory model}
 
 To test the hybrid and the pure distributed memory model we do a few runs on Kongull with the following settings such that $n = 16384$,  $t\cdot p = 36$ and $p = \{1, 2, 3, 4, 6, 9, 12, 18, 36\}$.
@@ -31,3 +38,6 @@ Inspired by that was discovered in the last section we now focus on speedup and 
 \end{figure}
 
 As can be seen in figures \ref{fig:speedup} and \ref{fig:efficiacy} we get a really good speedup and the parallel efficiency is almost ideal as long we only use a single node with 12 processors. With more than 12 processors the efficiency drops, but the speedup still makes it worth it. We assume this happens because the network overhead of using more than one node inhibits the efficiency more than the overhead of transporting things inside the node itself.
+
+
+\subsection*{How does runtime scale with N}
