@@ -1,12 +1,14 @@
-
 \subsection*{Running only MPI or openMP}
-
-
-
+\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.7\textwidth]{./figures/runtime_either_MPI_OMP}
+			\caption{Runtime for MPI and OMP program.}
+			\label{fig:MPIvsOMP}
+\end{figure}
+We first run our code both as a pure MPI and as a pure OpenMP program on one node to look at runtime. From figure \ref{fig:MPIvsOMP} we see that the runtime is equal for $t = p = 1$, as it obviously should be since this is the serial implementation. Then, the runtime decreases as $p$ and $t$ increases, as it should. In other words, we get a good speedup for both parallelization methods given that we are one one node. 
 \subsection*{How many nodes is best}
 
 \subsection*{Hybrid vs pure distributed memory model}
-
 To test the hybrid and the pure distributed memory model we do a few runs on Kongull with the following settings such that $n = 16384$,  $t\cdot p = 36$ and $p = \{1, 2, 3, 4, 6, 9, 12, 18, 36\}$.
 \begin{figure}
 \centering
