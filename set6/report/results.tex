@@ -1,9 +1,14 @@
-
 \subsection*{Running only MPI or openMP}
+\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.7\textwidth]{./figures/runtime_either_MPI_OMP}
+			\caption{Runtime for MPI and OMP program.}
+			\label{fig:MPIvsOMP}
+\end{figure}
+We first run our code both as a pure MPI and as a pure OpenMP program on one node to look at runtime. From figure \ref{fig:MPIvsOMP} we see that the runtime is equal for $t = p = 1$, as it obviously should be since this is the serial implementation. Then, the runtime decreases as $p$ and $t$ increases, as it should. In other words, we get a good speedup for both parallelization methods given that we are one one node. 
 
 
-
-\subsection*{optimal number of nodes with MPI}
+\subsection*{Optimal number of nodes with MPI}
 
 The next question then becomes: given a number of processors, which number of nodes will work best? The results are presented in figure \ref{fig:bestnodes}.
 \begin{figure}[h]
@@ -14,8 +19,8 @@ The next question then becomes: given a number of processors, which number of no
 \end{figure}
 The clearly best result is if we keep all the processing on a single node, but the moment we spread out to two or more nodes we get a speedup for every new node we add (at least till six nodes). We attribute this be the limiting factor of bandwidth between the nodes. We will get much more efficient use of the bandwidth if we spread our data across multiple nodes. The implementation only transfers data in the transpose function, but then again it transfers a lot of data at the same time and it is natural that we reach the bandwidth cap.
 
-\subsection*{Hybrid vs pure distributed memory model}
 
+\subsection*{Hybrid vs pure distributed memory model}
 To test the hybrid and the pure distributed memory model we do a few runs on Kongull with the following settings such that $n = 16384$,  $t\cdot p = 36$ and $p = \{1, 2, 3, 4, 6, 9, 12, 18, 36\}$.
 \begin{figure}
 \centering
@@ -53,3 +58,10 @@ As can be seen in figure \ref{fig:efficiacy} the parallel efficiency, defined as
 
 
 \subsection*{How does runtime scale with N}
+\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.7\textwidth]{./figures/runtimeN}
+			\caption{Runtime with increasing problem size.}
+			\label{fig:runtimeN}
+\end{figure}
+Next, we study how the runtime of our program scales with the problem size $N$. From the theory, we know that the runtime should be of order $\mathcal{O}(N^2\log(N))$. We observe from figure \ref{fig:runtimeN} the runtime appear to go towards the expected order as $N$ increases. 
