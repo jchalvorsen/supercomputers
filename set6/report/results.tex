@@ -43,3 +43,10 @@ As can be seen in figures \ref{fig:speedup} and \ref{fig:efficiacy} we get a rea
 
 
 \subsection*{How does runtime scale with N}
+\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.7\textwidth]{./figures/runtimeN}
+			\caption{Runtime with increasing problem size.}
+			\label{fig:runtimeN}
+\end{figure}
+Next, we study how the runtime of our program scales with the problem size $N$. From the theory, we know that the runtime should be of order $\mathcal{O}(N^2\log(N))$. We observe from figure \ref{fig:runtimeN} the runtime appear to go towards the expected order as $N$ increases. 
