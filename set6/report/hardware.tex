@@ -1,1 +1,9 @@
-Our code is run on the Kongull which is a linux cluster using CentOS 5.3 and running Rocks. The cluster has 1 login node, 4 I/O nodes and 108 compute nodes. 96 of the compute nodes have two 6-core AMD Istanbul processors while the 12 last nodes have 2 8-core Intel Sandy Bridge processors. For more information about the cluster we refer to the clusters webpage \cite{kongull}.
+Our code is run on Kongull which is a linux cluster using CentOS 5.3 and running Rocks. The cluster has 1 login node, 4 I/O nodes and 108 compute nodes. 96 of the compute nodes have two 6-core AMD Istanbul processors while the 12 last nodes have 2 8-core Intel Sandy Bridge processors. For more information about the cluster we refer to the clusters webpage \cite{kongull}.
+
+We used these modules on kongull:
+\begin{itemize}
+\item cmake
+\item intelcomp
+\item openmpi/1.4.3-intel.
+\end{itemize}
+We also made sure to compile with the standard C and fortran flags, as well as the needed flags for openMP and MPI. The optimization flags have been set to maximum (-O3).
